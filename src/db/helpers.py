@@ -9,7 +9,7 @@ def populate_jokes_db(s_host, path_json):
     engine = db.connect(s_host, POSTGRES_USER, POSTGRES_PASSWORD, s_db_name)
 
     df_json = pd.read_json(path_json, encoding="utf8")
-    df_json.to_sql('jokes', con=engine, if_exists='replace', index_label='id')
+    df_json.to_sql('jokes', con=engine, if_exists='append', index=False)
 
 
 # populate_jokes_db("vps721960.ovh.net", "/Users/joan/Documents/python_projects/joke_bot/newjokes2.json")

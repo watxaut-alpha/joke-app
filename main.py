@@ -1,4 +1,4 @@
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 import logging
 
 from src.bot.secret import token
@@ -18,6 +18,9 @@ if __name__ == '__main__':
 
     # adds send joke
     dispatcher.add_handler(CommandHandler('send_joke', bot.send_joke))
+
+    # button rating
+    dispatcher.add_handler(CallbackQueryHandler(bot.button_rating))
 
     logger.info('--- Starting bot ---')
 
