@@ -1,5 +1,6 @@
 # ignore all secrets
 *secret.py
+insert_jokes.py
 
 
 # GITIGNORE.IO[PYTHON, PYCHARM]
