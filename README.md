@@ -1,11 +1,12 @@
-#Introduction
+# Introduction
+
 This project is the continuation of my other repository joke-automation-mail. 
 Both projects are intended to send text to the user (in this case a joke) but this one is 
 a little bit more complicated than sending just a mail no no. In this one I created a bot
 that is able to send and make the user rate the joke. All the user input goes to a 
 postgres DB and then analysed.
 
-#Installation
+# Installation
 You can try the project in either a Python Virtual Environment or in Docker (preferred option)
 
 ## Python Virtual environment
@@ -37,7 +38,7 @@ host = 'the host of the DB (localhost or other)'
 s_db_name = 'the DB schema name'  
 ```
 
-#Incoming next steps
+# Incoming next steps
 * Add a BI client or a Jupyter Notebook in order to visualise the ratings of the jokes
 * Add scrappers looking for jokes and make a functionality in the bot to validate 
 these new jokes
