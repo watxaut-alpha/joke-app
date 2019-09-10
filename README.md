@@ -1,4 +1,4 @@
-#Joke-app
+# Joke-app
 This project is the continuation of my other repository 
 [joke-automation-mail](https://github.com/watxaut-alpha/joke-mail-automation "jokes in mails yay"). 
 Both projects are intended to send jokes to the user (in this case a joke) but this one is 
@@ -8,7 +8,7 @@ a little bit more complex than sending just a mail, hm hm no no no.
 In this one I created a bot that is able to send a joke and make the user rate it. 
 All the user input goes into a postgres DB and then is analysed.
 
-#Installation
+# Installation
 You can try the project in either a Python Virtual Environment or in Docker (preferred option)
 BUT FIRST you need to define two files: bot.secret.py and db.secret.py files: 
 
@@ -50,7 +50,7 @@ I created a MakeFile for easier usage:
 * "make build" in the root of the repo will build the container (needed if you changed the code)
 * "make run" will run the container
 
-#Incoming next steps
+# Incoming next steps
 * Add a BI client or a Jupyter Notebook in order to visualise the ratings of the jokes
 * Add scrappers looking for jokes and make a functionality in the bot to validate 
 these new jokes
