@@ -6,6 +6,7 @@ import src.db.helpers as db_helpers
 import src.db.users as users
 import src.db.constants as db_ct
 import src.db.jokes as jokes
+import src.db.twitter as twitter_db
 
 logger = logging.getLogger('jokeBot')
 
@@ -83,8 +84,6 @@ def send_joke(bot, update):
 
     conn = None
 
-    return id_joke
-
 
 def button_rating(bot, update):
 
@@ -104,3 +103,64 @@ def button_rating(bot, update):
     joke_id = int(joke_id[4:].split(" - ")[0])
 
     jokes.insert_rating_joke(conn, user_id, joke_id, f_rating)
+
+
+def validate_joke(bot, update):
+    logger.info('Command validate_joke issued')
+
+    # get user info coming from telegram message
+    user_id = update.message.chat.id
+    first_name = update.message.chat.first_name
+    message = update.message.text
+
+    # instance connection to PSQL DB
+    conn = db.get_jokes_app_connection()
+
+    # add log
+    db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
+
+    # query random joke and return only one in a pandas DF
+    df = twitter_db.get_random_twitter_joke(conn)
+
+    # unpack joke info and send it to telegram
+    str_joke = df["joke"][0]
+    id_joke = df["id"][0]
+
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=str_joke
+    )
+
+    db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "twitter_joke_id", id_joke)
+
+    # ratings
+    s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
+
+    keyboard = [[InlineKeyboardButton("Yep", callback_data=True),
+                 InlineKeyboardButton("Nope", callback_data=False)]]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text(s_ratings, reply_markup=reply_markup)
+
+    conn = None
+
+
+def button_validate(bot, update):
+
+    chat_id = update.callback_query.message.chat_id
+    message_id = update.callback_query.message["message_id"]
+    new_text = "Thanks for validating! :)))"
+
+    bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
+
+    conn = db.get_jokes_app_connection()
+
+    validated_by_user = update.callback_query.from_user.id
+    joke_id = update.callback_query.message.text
+    is_joke = bool(update.callback_query.data)
+
+    # erase and get id "id: {id} - sdmcsdcma"
+    tweet_str_id = int(joke_id[4:].split(" - ")[0])
+
+    twitter_db.update_joke_validation(conn, tweet_str_id, validated_by_user, is_joke)

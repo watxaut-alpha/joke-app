@@ -2,7 +2,10 @@ import logging
 import traceback
 import tweepy
 
+import src.db.core as db
+import src.db.twitter as twitter_db
 from src.scrappers.secret import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
+from src.scrappers.twitter_config import l_users_jokes, MAX_TWEETS_FOR_USER, TWITTER_LANG
 
 
 logger = logging.getLogger('jokeBot')
@@ -12,6 +15,8 @@ def init_twitter_handler():
 
     api = None
     try:
+        logger.debug("Init Twitter API")
+
         # create OAuthHandler object and set access
         auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
         auth.set_access_token(ACCESS_TOKEN, ACCESS_SECRET)
@@ -27,6 +32,8 @@ def init_twitter_handler():
 
 def get_tweets_from_user(api, user_name, max_tweets):
 
+    logger.debug("Getting jokes from twitter user: '{}'".format(user_name))
+
     # get twitter user by username (the one that appears in the url)
     twitter_user = api.get_user(user_name)
 
@@ -38,13 +45,15 @@ def get_tweets_from_user(api, user_name, max_tweets):
     for tweet in l_user_timeline:
         if "https" not in tweet.text:  # https not in text for only text jokes, not images
             d_tweet = {
-                "id": tweet.id_str,
-                "author": user_name,
-                "author_id": tweet.author.id_str,
-                "text": tweet.text
+                "tweet_str_id": tweet.id_str,
+                "user_name": user_name,
+                "user_str_id": tweet.author.id_str,
+                "joke": tweet.text
             }
 
             l_tweets.append(d_tweet)
+
+    logger.debug("Finished getting jokes from twitter user: '{}'".format(user_name))
 
     return l_tweets
 
@@ -52,7 +61,7 @@ def get_tweets_from_user(api, user_name, max_tweets):
 def get_tweets(api, query, max_tweets):
 
     try:
-        l_tweets = api.search(q=query, lang="es", count=max_tweets)
+        l_tweets = api.search(q=query, lang=TWITTER_LANG, count=max_tweets)
         for tweet in l_tweets:
             print(tweet.text)
 
@@ -60,17 +69,24 @@ def get_tweets(api, query, max_tweets):
         # print error (if any)
         print("Error : " + str(traceback.format_exc()))
 
-# twitter_api = init_twitter_handler()
-#
-# query = "chistes"
-# max_tweets = 50
-# get_tweets(twitter_api, query, max_tweets)
-#
-# u = twitter_api.get_user("EresChiste")
-#
-# # https not in text for only text jokes
-# u.timeline(trim_user=True, exclude_replies=True, include_rts=False, count=100)
-# l = []
-# for i in t:
-#     if not "https" in i.text:
-#         l.append(i.text)
+
+def add_jokes_to_twitter_table():
+    # init connection to twitter API
+    twitter_api = init_twitter_handler()
+
+    # init db connection
+    conn = db.get_jokes_app_connection()
+
+    # get a list of jokes from selected and curated twitter users
+    l_jokes = []
+    for twitter_user in l_users_jokes:
+        l_new_jokes = get_tweets_from_user(twitter_api, twitter_user, MAX_TWEETS_FOR_USER)
+        l_jokes.extend(l_new_jokes)
+
+    # input new jokes in the DB
+    for d_new_joke in l_jokes:
+        if not twitter_db.has_twitter_db_joke(conn, d_new_joke["tweet_str_id"]):
+            twitter_db.add_joke_to_twitter_table(conn, d_new_joke)
+
+
+add_jokes_to_twitter_table()

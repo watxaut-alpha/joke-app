@@ -13,11 +13,14 @@ if __name__ == '__main__':
     updater = Updater(token=token)
     dispatcher = updater.dispatcher
 
-    # adds the functions to the bot
+    # adds the functions to the bot function
     dispatcher.add_handler(CommandHandler('start', bot.start))
 
-    # adds send joke
+    # adds send joke function
     dispatcher.add_handler(CommandHandler('send_joke', bot.send_joke))
+
+    # adds validate joke function
+    dispatcher.add_handler(CommandHandler('validate_joke', bot.validate_joke))
 
     # button rating
     dispatcher.add_handler(CallbackQueryHandler(bot.button_rating))

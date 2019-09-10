@@ -3,10 +3,7 @@ import datetime
 
 
 def get_random_joke(conn):
-    # query new joke
-    sql = "SELECT * FROM jokes ORDER BY random() LIMIT 1;"
-    df = db.execute_query(conn, sql)
-    return df
+    return db.get_random_element(conn, "jokes")
 
 
 def insert_rating_joke(conn, user_id, joke_id, i_rating):

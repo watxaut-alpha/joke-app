@@ -35,3 +35,14 @@ def add_record(connection, model, d_values):
     df.to_sql(model, con=connection, if_exists='append', index=False)
 
     return True
+
+
+def get_random_element(conn, table, where=""):
+
+    # query a random element
+    if where == "":
+        sql = "SELECT * FROM {table} ORDER BY random() LIMIT 1;".format(table=table)
+    else:
+        sql = "SELECT * FROM {table} where {where} ORDER BY random() LIMIT 1;".format(table=table, where=where)
+    df = execute_query(conn, sql)
+    return df
