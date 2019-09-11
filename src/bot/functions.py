@@ -139,25 +139,34 @@ def validate_joke(bot, update):
     # query random joke and return only one in a pandas DF
     df = twitter_db.get_random_twitter_joke(conn)
 
-    # unpack joke info and send it to telegram
-    str_joke = df["joke"][0]
-    id_joke = df["id"][0]
+    if not df.empty:
+        # unpack joke info and send it to telegram
+        str_joke = df["joke"][0]
+        id_joke = df["id"][0]
 
-    bot.send_message(
-        chat_id=update.message.chat_id,
-        text=str_joke
-    )
+        bot.send_message(
+            chat_id=update.message.chat_id,
+            text=str_joke
+        )
 
-    db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "twitter_joke_id", id_joke)
+        db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "twitter_joke_id", id_joke)
 
-    # ratings
-    s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
+        # ratings
+        s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
 
-    keyboard = [[InlineKeyboardButton("Yep", callback_data=1),
-                 InlineKeyboardButton("Nope", callback_data=0)]]
+        keyboard = [[InlineKeyboardButton("Yep", callback_data=1),
+                     InlineKeyboardButton("Nope", callback_data=0)]]
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
+        reply_markup = InlineKeyboardMarkup(keyboard)
 
-    update.message.reply_text(s_ratings, reply_markup=reply_markup)
+        update.message.reply_text(s_ratings, reply_markup=reply_markup)
+
+    else:  # the table of twitter jokes is already all validated
+
+        s_message = "Whoops there is no more jokes to validate!"
+        bot.send_message(
+            chat_id=update.message.chat_id,
+            text=s_message
+        )
 
     conn = None
