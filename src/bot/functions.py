@@ -89,20 +89,37 @@ def button_rating(bot, update):
 
     chat_id = update.callback_query.message.chat_id
     message_id = update.callback_query.message["message_id"]
-    new_text = "Thanks for rating! :)))"
-
-    bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
+    user_id = update.callback_query.from_user.id
+    bot_message = update.callback_query.message.text
+    user_response = update.callback_query.data
 
     conn = db.get_jokes_app_connection()
 
-    user_id = update.callback_query.from_user.id
-    joke_id = update.callback_query.message.text
-    f_rating = float(update.callback_query.data)
+    # TODO: I dont like this approach, there should be another..
+    if "rate" in bot_message:
 
-    # erase and get id "id: {id} - sdmcsdcma"
-    joke_id = int(joke_id[4:].split(" - ")[0])
+        new_text = "Thanks for rating! :)))"
 
-    jokes.insert_rating_joke(conn, user_id, joke_id, f_rating)
+        f_rating = float(user_response)
+
+        # erase and get id "id: {id} - sdmcsdcma"
+        joke_id = int(bot_message[4:].split(" - ")[0])
+
+        jokes.insert_rating_joke(conn, user_id, joke_id, f_rating)
+
+    elif "joke" in bot_message:
+        new_text = "Thanks for the feedback! :DD"
+
+        is_joke = "1" == user_response
+
+        # erase and get id "id: {id} - sdmcsdcma"
+        tweet_str_id = int(bot_message[4:].split(" - ")[0])
+
+        twitter_db.update_joke_validation(conn, tweet_str_id, user_id, is_joke)
+    else:
+        new_text = "Thanks for the feedback brah! :DD"
+
+    bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
 
 
 def validate_joke(bot, update):
@@ -136,31 +153,11 @@ def validate_joke(bot, update):
     # ratings
     s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
 
-    keyboard = [[InlineKeyboardButton("Yep", callback_data=True),
-                 InlineKeyboardButton("Nope", callback_data=False)]]
+    keyboard = [[InlineKeyboardButton("Yep", callback_data=1),
+                 InlineKeyboardButton("Nope", callback_data=0)]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     update.message.reply_text(s_ratings, reply_markup=reply_markup)
 
     conn = None
-
-
-def button_validate(bot, update):
-
-    chat_id = update.callback_query.message.chat_id
-    message_id = update.callback_query.message["message_id"]
-    new_text = "Thanks for validating! :)))"
-
-    bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
-
-    conn = db.get_jokes_app_connection()
-
-    validated_by_user = update.callback_query.from_user.id
-    joke_id = update.callback_query.message.text
-    is_joke = bool(update.callback_query.data)
-
-    # erase and get id "id: {id} - sdmcsdcma"
-    tweet_str_id = int(joke_id[4:].split(" - ")[0])
-
-    twitter_db.update_joke_validation(conn, tweet_str_id, validated_by_user, is_joke)

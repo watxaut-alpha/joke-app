@@ -4,7 +4,7 @@ import src.db.core as db
 
 
 def is_user_exists(conn, user_id):
-    df = db.execute_query(conn, "select id from users where user_id = {}".format(user_id))
+    df = db.execute_read(conn, "select id from users where user_id = {}".format(user_id))
     return df.empty
 
 

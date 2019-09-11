@@ -4,7 +4,7 @@ import src.db.core as db
 
 
 def has_twitter_db_joke(conn, tweet_str_id):
-    df = db.execute_query(conn, "select tweet_str_id from validate_twitter_jokes where tweet_str_id = '{}'".format(
+    df = db.execute_read(conn, "select tweet_str_id from validate_twitter_jokes where tweet_str_id = '{}'".format(
         tweet_str_id))
     return not df.empty
 
@@ -19,7 +19,7 @@ def add_joke_to_twitter_table(conn, d_joke):
 
 
 def get_random_twitter_joke(conn):
-    return db.get_random_element(conn, "validate_twitter_jokes", where="is_joke = false")
+    return db.get_random_element(conn, "validate_twitter_jokes", where="is_joke is null")
 
 
 def update_joke_validation(conn, tweet_str_id, validated_by_user, is_joke):
@@ -28,10 +28,10 @@ update
     validate_twitter_jokes 
 set 
     is_joke = {is_joke}, 
-    validated_by_user = {validated_by_user}, 
-    updated_at="{updated_at}"
+    validated_by_user_id = {validated_by_user}, 
+    updated_at='{updated_at}'
 where 
-    tweet_str_id = "{tweet_str_id}"
+    id = {tweet_str_id}
 
 """.format(
         is_joke=is_joke,
@@ -40,5 +40,5 @@ where
         tweet_str_id=tweet_str_id
     )
 
-    df = db.execute_query(conn, sql)
+    db.execute_update(conn, sql)
 

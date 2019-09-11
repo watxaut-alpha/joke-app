@@ -20,7 +20,12 @@ def get_jokes_app_connection():
     return connect(host, POSTGRES_USER, POSTGRES_PASSWORD, s_db_name)
 
 
-def execute_query(connection, postgres_query):
+def execute_update(conn, postgres_query):
+    conn.execute(postgres_query)
+    return True
+
+
+def execute_read(connection, postgres_query):
     return pd.read_sql(postgres_query, connection)
 
 
@@ -44,5 +49,5 @@ def get_random_element(conn, table, where=""):
         sql = "SELECT * FROM {table} ORDER BY random() LIMIT 1;".format(table=table)
     else:
         sql = "SELECT * FROM {table} where {where} ORDER BY random() LIMIT 1;".format(table=table, where=where)
-    df = execute_query(conn, sql)
+    df = execute_read(conn, sql)
     return df
