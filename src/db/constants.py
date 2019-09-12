@@ -1,2 +1,2 @@
-BOT = "bot"
-USER = "user"
+BOT: str = "bot"
+USER: str = "user"

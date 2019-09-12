@@ -1,5 +1,6 @@
 import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Bot, Update
 
 import src.db.core as db
 import src.db.helpers as db_helpers
@@ -11,7 +12,7 @@ import src.db.twitter as twitter_db
 logger = logging.getLogger('jokeBot')
 
 
-def start(bot, update):
+def start(bot: Bot, update: Update) -> None:
     logger.info('Command start issued')
 
     # get user info coming from telegram message
@@ -41,7 +42,7 @@ def start(bot, update):
     conn = None
 
 
-def send_joke(bot, update):
+def send_joke(bot: Bot, update: Update) -> None:
     logger.info('Command send_joke issued')
 
     # get user info coming from telegram message
@@ -85,7 +86,7 @@ def send_joke(bot, update):
     conn = None
 
 
-def button_rating(bot, update):
+def button_rating(bot: Bot, update: Update) -> None:
 
     chat_id = update.callback_query.message.chat_id
     message_id = update.callback_query.message["message_id"]
@@ -122,7 +123,7 @@ def button_rating(bot, update):
     bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
 
 
-def validate_joke(bot, update):
+def validate_joke(bot: Bot, update: Update) -> None:
     logger.info('Command validate_joke issued')
 
     # get user info coming from telegram message

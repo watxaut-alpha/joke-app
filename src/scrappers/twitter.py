@@ -1,17 +1,19 @@
 import logging
 import traceback
 import tweepy
+from typing import List
+from tweepy.models import Status
 
 import src.db.core as db
 import src.db.twitter as twitter_db
 from src.scrappers.secret import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
-from src.scrappers.twitter_config import l_users_jokes, MAX_TWEETS_FOR_USER, TWITTER_LANG
+from src.scrappers.twitter_config import JOKES_FROM_USERS, MAX_TWEETS_FOR_USER, TWITTER_LANG
 
 
 logger = logging.getLogger('jokeBot')
 
 
-def init_twitter_handler():
+def init_twitter_handler() -> tweepy.API:
 
     api = None
     try:
@@ -30,7 +32,7 @@ def init_twitter_handler():
     return api
 
 
-def get_tweets_from_user(api, user_name, max_tweets):
+def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> List[dict]:
 
     logger.debug("Getting jokes from twitter user: '{}'".format(user_name))
 
@@ -58,19 +60,22 @@ def get_tweets_from_user(api, user_name, max_tweets):
     return l_tweets
 
 
-def get_tweets(api, query, max_tweets):
+def get_tweets(api: tweepy.API, query: str, max_tweets: int) -> List[Status]:
 
     try:
         l_tweets = api.search(q=query, lang=TWITTER_LANG, count=max_tweets)
         for tweet in l_tweets:
             print(tweet.text)
 
-    except tweepy.TweepError as e:
+    except tweepy.TweepError:
         # print error (if any)
         print("Error : " + str(traceback.format_exc()))
+        l_tweets = []
+
+    return l_tweets
 
 
-def add_jokes_to_twitter_table():
+def add_jokes_to_twitter_table() -> None:
     # init connection to twitter API
     twitter_api = init_twitter_handler()
 
@@ -79,7 +84,7 @@ def add_jokes_to_twitter_table():
 
     # get a list of jokes from selected and curated twitter users
     l_jokes = []
-    for twitter_user in l_users_jokes:
+    for twitter_user in JOKES_FROM_USERS:
         l_new_jokes = get_tweets_from_user(twitter_api, twitter_user, MAX_TWEETS_FOR_USER)
         l_jokes.extend(l_new_jokes)
 
@@ -88,5 +93,3 @@ def add_jokes_to_twitter_table():
         if not twitter_db.has_twitter_db_joke(conn, d_new_joke["tweet_str_id"]):
             twitter_db.add_joke_to_twitter_table(conn, d_new_joke)
 
-
-add_jokes_to_twitter_table()

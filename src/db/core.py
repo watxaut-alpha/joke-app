@@ -1,35 +1,36 @@
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 import pandas as pd
 
-from src.db.secret import host, POSTGRES_USER, POSTGRES_PASSWORD, s_db_name
+from src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
 
-def connect(s_host, user, password, db_name):
-    engine = create_engine("postgresql://{user}:{pwd}@{host}:5432/{db_name}".format(
+def connect(host: str, user: str, password: str, schema_name: str) -> Engine:
+    engine = create_engine("postgresql://{user}:{pwd}@{host}:5432/{schema_name}".format(
         user=user,
         pwd=password,
-        host=s_host,
-        db_name=db_name),
+        host=host,
+        schema_name=schema_name),
         encoding="utf8"
     )
 
     return engine
 
 
-def get_jokes_app_connection():
-    return connect(host, POSTGRES_USER, POSTGRES_PASSWORD, s_db_name)
+def get_jokes_app_connection() -> Engine:
+    return connect(HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
 
 
-def execute_update(conn, postgres_query):
+def execute_update(conn: Engine, postgres_query: str) -> bool:
     conn.execute(postgres_query)
     return True
 
 
-def execute_read(connection, postgres_query):
-    return pd.read_sql(postgres_query, connection)
+def execute_read(conn: Engine, postgres_query: str) -> pd.DataFrame:
+    return pd.read_sql(postgres_query, conn)
 
 
-def add_record(connection, model, d_values):
+def add_record(conn: Engine, model: str, d_values: dict) -> bool:
     # workaround for inserting only one row with pandas DF
     d_values = {key: [value] for key, value in d_values.items()}
 
@@ -37,12 +38,12 @@ def add_record(connection, model, d_values):
     df = pd.DataFrame(d_values)
 
     # store data in the Connection DB
-    df.to_sql(model, con=connection, if_exists='append', index=False)
+    df.to_sql(model, con=conn, if_exists='append', index=False)
 
     return True
 
 
-def get_random_element(conn, table, where=""):
+def get_random_element(conn: Engine, table: str, where: str = "") -> pd.DataFrame:
 
     # query a random element
     if where == "":

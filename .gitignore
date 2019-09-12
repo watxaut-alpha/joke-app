@@ -1,6 +1,7 @@
 # ignore all secrets
 *secret.py
 insert_jokes.py
+newjokes2.json
 
 
 # GITIGNORE.IO[PYTHON, PYCHARM]

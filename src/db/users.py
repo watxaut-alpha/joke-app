@@ -1,14 +1,15 @@
 import datetime
+from sqlalchemy.engine import Engine
 
 import src.db.core as db
 
 
-def is_user_exists(conn, user_id):
+def is_user_exists(conn: Engine, user_id: int) -> bool:
     df = db.execute_read(conn, "select id from users where user_id = {}".format(user_id))
     return df.empty
 
 
-def add_user(conn, user_id, first_name):
+def add_user(conn: Engine, user_id: int, first_name: str) -> bool:
 
     if is_user_exists(conn, user_id):
         d_user = {
