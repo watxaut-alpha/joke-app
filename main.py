@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 import logging
 
-from src.bot.secret import token
+from src.bot.secret import TOKEN
 import src.bot.functions as bot
 
 
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     logger = logging.getLogger('jokeBot')
 
     # telegram bot init
-    updater = Updater(token=token)
+    updater = Updater(token=TOKEN)
     dispatcher = updater.dispatcher
 
     # adds the functions to the bot function
