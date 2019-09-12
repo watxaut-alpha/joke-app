@@ -32,7 +32,7 @@ def init_twitter_handler() -> tweepy.API:
     return api
 
 
-def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> List[dict]:
+def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> List[dict, ...]:
 
     logger.debug("Getting jokes from twitter user: '{}'".format(user_name))
 
@@ -60,7 +60,7 @@ def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> Li
     return l_tweets
 
 
-def get_tweets(api: tweepy.API, query: str, max_tweets: int) -> List[Status]:
+def get_tweets(api: tweepy.API, query: str, max_tweets: int) -> List[Status, ...]:
 
     try:
         l_tweets = api.search(q=query, lang=TWITTER_LANG, count=max_tweets)
