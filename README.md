@@ -3,6 +3,7 @@ This project is the continuation of my other repository
 [joke-automation-mail](https://github.com/watxaut-alpha/joke-mail-automation "jokes in mails yay"). 
 Both projects are intended to send jokes to the user (in this case a joke) but this one is 
 a little bit more complex than sending just a mail, hm hm no no no. 
+
 ![He knows it's not the same](resources/hmhm.gif)
 
 In this one I created a bot that is able to send a joke and make the user rate it. 
@@ -49,6 +50,18 @@ If you want to run it in docker simply install docker (if you haven't) and build
 I created a MakeFile for easier usage:
 * "make build" in the root of the repo will build the container (needed if you changed the code)
 * "make run" will run the container
+
+# Scrappers
+I am using scrappers to feed the DB with jokes. But not every thing that is scrapped is 
+a joke, it needs validation first. This is why the bot has the option "validate_joke",
+which asks the user if the sent joke is actually a joke or not.
+
+## Twitter
+I call it scrapping, but I am just using the API wrapper library for Python: Tweepy, which
+connects to Twitter via OAuth and returns tweets, although the idea is the same: get the
+jokes automatically from a list of pages(users instead)
+
+### 
 
 # Incoming next steps
 * Add a BI client or a Jupyter Notebook in order to visualise the ratings of the jokes
