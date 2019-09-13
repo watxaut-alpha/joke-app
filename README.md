@@ -3,7 +3,7 @@ This project is the continuation of my other repository
 [joke-automation-mail](https://github.com/watxaut-alpha/joke-mail-automation "jokes in mails yay"). 
 Both projects are intended to send jokes to the user (in this case a joke) but this one is 
 a little bit more complex than sending just a mail, hm hm no no no. 
-![He knows it's not the same](https://gph.is/2GrZVj9)
+![He knows it's not the same](resources/hmhm.gif)
 
 In this one I created a bot that is able to send a joke and make the user rate it. 
 All the user input goes into a postgres DB and then is analysed.
