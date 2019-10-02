@@ -44,4 +44,3 @@ where
     )
 
     db.execute_update(conn, sql)
-

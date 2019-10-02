@@ -6,8 +6,8 @@ from tweepy.models import Status
 
 import src.db.core as db
 import src.db.twitter as twitter_db
-from src.scrappers.secret import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
-from src.scrappers.twitter_config import JOKES_FROM_USERS, MAX_TWEETS_FOR_USER, TWITTER_LANG
+from src.scrappers.twitter.secret import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
+from src.scrappers.twitter.twitter_config import JOKES_FROM_USERS, MAX_TWEETS_FOR_USER, TWITTER_LANG
 
 
 logger = logging.getLogger('jokeBot')
