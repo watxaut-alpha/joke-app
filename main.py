@@ -10,7 +10,7 @@ if __name__ == '__main__':
     logger = logging.getLogger('jokeBot')
 
     # telegram bot init
-    updater = Updater(token=TOKEN, use_context=True)
+    updater = Updater(token=TOKEN)
     dispatcher = updater.dispatcher
 
     # adds the functions to the bot function

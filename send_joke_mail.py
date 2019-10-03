@@ -1,0 +1,16 @@
+import src.mail.core as mail
+import src.db.jokes as jokes
+import src.db.core as db
+from src.mail.secret import USER, PASSWORD
+
+conn = db.get_jokes_app_connection()
+
+
+df_joke = jokes.get_random_joke_not_sent_by_mail_already(conn)
+s_joke = df_joke["joke"][0]
+joke_id = int(df_joke["id"][0])
+
+is_sent = mail.send_mail(USER, PASSWORD, mail.RECEIVERS, s_joke, mail.SUBJECT, mail.DISCLAIMER)
+
+if is_sent:
+    pass

@@ -9,6 +9,10 @@ def get_random_joke(conn: Engine) -> pd.DataFrame:
     return db.get_random_element(conn, "jokes")
 
 
+def get_random_joke_not_sent_by_mail_already(conn: Engine) -> pd.DataFrame:
+    return db.get_random_element(conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)")
+
+
 def insert_rating_joke(conn: Engine, user_id: int, joke_id: int, rating: float) -> None:
 
     model = "ratings"
@@ -31,3 +35,7 @@ def put_joke_db(conn: Engine, joke: str, author: str) -> None:
     }
 
     db.add_record(conn, model, d_values)
+
+
+def put_sent_joke_db():
+    pass

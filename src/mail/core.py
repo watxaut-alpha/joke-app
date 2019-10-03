@@ -7,6 +7,17 @@ from email.mime.multipart import MIMEMultipart
 
 logger = logging.getLogger("jokeBot")
 
+DISCLAIMER = """Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor.
+
+------------------------------------------------------------
+DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE EVERYDAY, 
+BREAKING THE CODE, BREAKING YOUR COMPUTER OR STARTING WW3. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE 
+ACCUSED OF RACISM, BAD JOKES OR 'THIS JOKE GAVE ME AIDS'. TALK TO MY HAND"""
+
+RECEIVERS = ["watxaut.alpha@gmail.com", ]
+
+SUBJECT = "CHISTE MALO DEL DÍA - NINI EDITION: RELOADED"
+
 
 def send_mail(mail_user: str, mail_pwd: str, receivers: list, joke: str, subject: str, disclaimer: str):
 
@@ -60,5 +71,5 @@ Subject: {}
     return True
 
 
-from src.mail.secret import USER, PASSWORD
-send_mail(USER, PASSWORD, [USER,], "THIS IS A JOKE MAN", "Prova html", "This is a disclaimer")
+# from src.mail.secret import USER, PASSWORD
+# send_mail(USER, PASSWORD, [USER,], "THIS IS A JOKE MAN", "Prova html", "This is a disclaimer")
