@@ -37,5 +37,11 @@ def put_joke_db(conn: Engine, joke: str, author: str) -> None:
     db.add_record(conn, model, d_values)
 
 
-def put_sent_joke_db():
-    pass
+def put_sent_joke_db(conn: Engine, joke_id: int) -> None:
+    model = "sent_jokes"
+    d_values = {
+        "joke_id": joke_id,
+        "created_at": datetime.datetime.now().isoformat()
+    }
+
+    db.add_record(conn, model, d_values)

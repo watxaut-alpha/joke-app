@@ -7,10 +7,12 @@ conn = db.get_jokes_app_connection()
 
 
 df_joke = jokes.get_random_joke_not_sent_by_mail_already(conn)
-s_joke = df_joke["joke"][0]
+s_joke = df_joke["joke"][0].replace("\n", "<br>")
 joke_id = int(df_joke["id"][0])
 
 is_sent = mail.send_mail(USER, PASSWORD, mail.RECEIVERS, s_joke, mail.SUBJECT, mail.DISCLAIMER)
 
 if is_sent:
-    pass
+    jokes.put_sent_joke_db(conn, joke_id)
+else:
+    print("Mail not sent!!")
