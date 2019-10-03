@@ -18,11 +18,12 @@ Subject: {}
 
     email_html = """<html>
   <body>
-    <h1>{joke}
-        <br>
-        <br>
-        {disclaimer}
-    </h1>
+    <br>
+    <blockquote>
+    <p>{joke}</p>
+    </blockquote>
+    <br>
+    <p><sub>{disclaimer}</sub></p>
   </body>
 </html>
 """.format(joke=joke, disclaimer=disclaimer)
@@ -30,7 +31,7 @@ Subject: {}
     # fancy email with html
     message = MIMEMultipart("alternative")
     message["Subject"] = subject
-    message["From"] = USER
+    message["From"] = mail_user
     message["To"] = ",".join(receivers)
 
     # Turn these into plain/html MIMEText objects
@@ -59,5 +60,5 @@ Subject: {}
     return True
 
 
-# from src.mail.secret import USER, PASSWORD
-# send_mail(USER, PASSWORD, [USER,], "THIS IS A JOKE MAN", "Prova html", "This is a disclaimer")
+from src.mail.secret import USER, PASSWORD
+send_mail(USER, PASSWORD, [USER,], "THIS IS A JOKE MAN", "Prova html", "This is a disclaimer")
