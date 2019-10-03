@@ -30,7 +30,13 @@ def start(bot: Bot, update: Update) -> None:
     users.add_user(conn, user_id, first_name)
 
     # send telegram message
-    bot_message = "Hey hey, new chistes everyday"
+    bot_message = """Hey newcomer! This bot is able to send bad jokes (in spanish for the moment). You have 3 options:
+    - /send_joke -> which will send a random joke from the DB
+    - /rate_joke -> which sends a joke and let's you rate it
+    - /validate_joke -> sends a wannabe joke asking if it should be part of the 'curated list' of jokes
+    
+    Have fun!
+    """
     bot.send_message(
         chat_id=update.message.chat_id,
         text=bot_message
@@ -44,6 +50,37 @@ def start(bot: Bot, update: Update) -> None:
 
 def send_joke(bot: Bot, update: Update) -> None:
     logger.info('Command send_joke issued')
+
+    # get user info coming from telegram message
+    user_id = update.message.chat.id
+    first_name = update.message.chat.first_name
+    message = update.message.text
+
+    # instance connection to PSQL DB
+    conn = db.get_jokes_app_connection()
+
+    # add log
+    db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
+
+    # query random joke and return only one in a pandas DF
+    df = jokes.get_random_joke(conn)
+
+    # unpack joke info and send it to telegram
+    str_joke = df["joke"][0]
+    id_joke = df["id"][0]
+
+    bot.send_message(
+        chat_id=update.message.chat_id,
+        text=str_joke
+    )
+
+    db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "joke_id", id_joke)
+
+    conn = None
+
+
+def rate_joke(bot: Bot, update: Update) -> None:
+    logger.info('Command rate_joke issued')
 
     # get user info coming from telegram message
     user_id = update.message.chat.id
@@ -121,6 +158,8 @@ def button_rating(bot: Bot, update: Update) -> None:
         new_text = "Thanks for the feedback brah! :DD"
 
     bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
+
+    conn = None
 
 
 def validate_joke(bot: Bot, update: Update) -> None:

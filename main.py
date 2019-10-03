@@ -16,10 +16,10 @@ if __name__ == '__main__':
     # adds the functions to the bot function
     dispatcher.add_handler(CommandHandler('start', bot.start))
 
-    # adds send joke function
     dispatcher.add_handler(CommandHandler('send_joke', bot.send_joke))
 
-    # adds validate joke function
+    dispatcher.add_handler(CommandHandler('rate_joke', bot.rate_joke))
+
     dispatcher.add_handler(CommandHandler('validate_joke', bot.validate_joke))
 
     # button rating
