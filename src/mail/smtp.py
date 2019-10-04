@@ -4,17 +4,22 @@ import traceback
 
 from email.mime.multipart import MIMEMultipart
 
-from src.mail.secret import PASSWORD
 
-
-def send_mail(mail_user: str, receivers: list, message: MIMEMultipart, email_text: str):
+def send_mail(mail_user: str, mail_pwd: str, receivers: list, message: MIMEMultipart, email_text: str):
     logger = logging.getLogger("jokeBot")
     try:
-        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-        server.ehlo()
-        server.login(mail_user, PASSWORD)
+        if mail_user.endswith("gmail.com"):
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        elif mail_user.endswith("yahoo.com"):
+            server = smtplib.SMTP_SSL('smtp.mail.yahoo.com', 465)
+        else:
+            return False
 
-        server.sendmail(mail_user, receivers, message.as_string())
+        server.ehlo()
+        server.login(mail_user, mail_pwd)
+
+        server.sendmail(mail_user, receivers, message.as_bytes())
+
         server.close()
 
         logger.info('Email sent!: "{}"'.format(email_text))

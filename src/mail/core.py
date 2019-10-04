@@ -54,7 +54,7 @@ Subject: {}
     return message, email_text
 
 
-def send_mail(mail_user: str, receivers: list, joke: str, subject: str, provider: str = "google"):
+def send_mail(mail_user: str, mail_pwd: str, receivers: list, joke: str, subject: str, provider: str = "google"):
     message, email_text = create_message(mail_user, receivers, joke, subject, SIGNATURE, DISCLAIMER)
 
     if provider == "google":
@@ -67,9 +67,9 @@ def send_mail(mail_user: str, receivers: list, joke: str, subject: str, provider
 
     elif provider == "smtp":
 
-        is_sent = smtp.send_mail(mail_user, receivers, message, email_text)
+        is_sent = smtp.send_mail(mail_user, mail_pwd, receivers, message, email_text)
 
     else:
-        raise Exception("Invalid provider. Must be one of ['google', 'smtp']")
+        raise Exception("Invalid provider. Must be one of ['google', 'smtp', 'mailgun']")
 
     return is_sent
