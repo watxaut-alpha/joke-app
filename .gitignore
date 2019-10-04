@@ -6,6 +6,10 @@ newjokes2.json
 # everything ended with virgulilla
 *~
 
+# auth for google Gmail
+src/mail/google/credentials.json
+src/mail/google/token.pickle
+
 # GITIGNORE.IO[PYTHON, PYCHARM]
 # Created by https://www.gitignore.io/api/python,pycharm
 # Edit at https://www.gitignore.io/?templates=python,pycharm

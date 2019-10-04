@@ -4,6 +4,7 @@ attrs==19.2.0
 Automat==0.7.0
 backcall==0.1.0
 bleach==3.1.0
+cachetools==3.1.1
 certifi==2019.9.11
 cffi==1.12.3
 chardet==3.0.4
@@ -14,6 +15,11 @@ decorator==4.4.0
 defusedxml==0.6.0
 entrypoints==0.3
 future==0.17.1
+google-api-python-client==1.7.11
+google-auth==1.6.3
+google-auth-httplib2==0.0.3
+google-auth-oauthlib==0.4.0
+httplib2==0.14.0
 hyperlink==19.0.0
 idna==2.8
 incremental==17.5.0
@@ -56,13 +62,14 @@ pyOpenSSL==19.0.0
 pyrsistent==0.15.4
 PySocks==1.7.1
 python-dateutil==2.8.0
-python-telegram-bot==12.1.1
+python-telegram-bot==11.1.0
 pytz==2019.2
 pyzmq==18.1.0
 qtconsole==4.5.5
 queuelib==1.5.0
 requests==2.22.0
 requests-oauthlib==1.2.0
+rsa==4.0
 Scrapy==1.7.3
 Send2Trash==1.5.0
 service-identity==18.1.0
@@ -74,6 +81,7 @@ tornado==6.0.3
 traitlets==4.3.2
 tweepy==3.8.0
 Twisted==19.7.0
+uritemplate==3.0.0
 urllib3==1.25.6
 w3lib==1.21.0
 wcwidth==0.1.7

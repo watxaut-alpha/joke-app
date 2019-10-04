@@ -8,7 +8,7 @@ git checkout master
 git pull
 
 # build new docker image
-docker build -t jokes-app:0.2.0 .
+docker build -t jokes-app:0.3.0 .
 
 # Run new container
-docker run -it --rm --name jokes-app-docker jokes-app:0.2.0
+docker run -it --rm --name jokes-app-docker jokes-app:0.3.0
