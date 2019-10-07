@@ -16,7 +16,7 @@ def put_validated_jokes_in_joke_db():
     if not df_validated_jokes.empty:
 
         # drop columns that we do not want and rename cols
-        col_exclude = ["tweet_str_id", "user_str_id", "is_joke", "validated_by_user_id", "updated_at", "deleted_at"]
+        col_exclude = ["id", "tweet_str_id", "user_str_id", "is_joke", "validated_by_user_id", "updated_at", "deleted_at"]
         col_rename = {"user_name": "author"}
         df_jokes = df_validated_jokes.drop(columns=col_exclude).rename(columns=col_rename)
 
