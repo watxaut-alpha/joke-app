@@ -1,6 +1,6 @@
+import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
-import pandas as pd
 
 from src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
@@ -38,6 +38,12 @@ def add_record(conn: Engine, model: str, d_values: dict) -> bool:
     df = pd.DataFrame(d_values)
 
     # store data in the Connection DB
+    df.to_sql(model, con=conn, if_exists='append', index=False)
+
+    return True
+
+
+def add_records(conn: Engine, model: str, df: pd.DataFrame):
     df.to_sql(model, con=conn, if_exists='append', index=False)
 
     return True

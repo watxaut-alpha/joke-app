@@ -1,7 +1,6 @@
 import base64
-
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import src.mail.google.google as gmail
 import src.mail.smtp as smtp

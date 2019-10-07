@@ -1,6 +1,7 @@
 import datetime
-from sqlalchemy.engine import Engine
+
 import pandas as pd
+from sqlalchemy.engine import Engine
 
 import src.db.core as db
 
@@ -31,7 +32,8 @@ def put_joke_db(conn: Engine, joke: str, author: str) -> None:
         "joke": joke,
         "author": author,
         "rating": 5,
-        "tags": ""
+        "tags": "",
+        "created_at": datetime.datetime.now().isoformat()
     }
 
     db.add_record(conn, model, d_values)
