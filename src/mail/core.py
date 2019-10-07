@@ -2,7 +2,6 @@ import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-import src.mail.google.google as gmail
 import src.mail.smtp as smtp
 
 SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
@@ -56,19 +55,11 @@ Subject: {}
 def send_mail(mail_user: str, mail_pwd: str, receivers: list, joke: str, subject: str, provider: str = "google"):
     message, email_text = create_message(mail_user, receivers, joke, subject, SIGNATURE, DISCLAIMER)
 
-    if provider == "google":
-
-        # init service
-        service = gmail.init_service()
-
-        message_raw = {'raw': base64.urlsafe_b64encode(message.as_bytes()).decode()}
-        is_sent = gmail.send_message(service, mail_user, message_raw)
-
-    elif provider == "smtp":
+    if provider == "smtp":
 
         is_sent = smtp.send_mail(mail_user, mail_pwd, receivers, message, email_text)
 
     else:
-        raise Exception("Invalid provider. Must be one of ['google', 'smtp']")
+        raise Exception("Invalid provider. Must be one of ['smtp']")
 
     return is_sent
