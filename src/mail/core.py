@@ -70,6 +70,6 @@ def send_mail(mail_user: str, mail_pwd: str, receivers: list, joke: str, subject
         is_sent = smtp.send_mail(mail_user, mail_pwd, receivers, message, email_text)
 
     else:
-        raise Exception("Invalid provider. Must be one of ['google', 'smtp', 'mailgun']")
+        raise Exception("Invalid provider. Must be one of ['google', 'smtp']")
 
     return is_sent

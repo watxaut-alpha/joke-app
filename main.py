@@ -1,33 +1,30 @@
-from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 import logging
+import argparse
 
-from src.bot.secret import TOKEN
-import src.bot.functions as bot
-
+import src.bot.start as bot
+import src.tasks.mail as mail
+import src.tasks.validate as validate
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-a", "--action", type=str, choices=['send_joke_mail', "validate_jokes"],
+                        help="Type of action to run. Leave empty to run the bot")
+
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
     logger = logging.getLogger('jokeBot')
 
-    # telegram bot init
-    updater = Updater(token=TOKEN)
-    dispatcher = updater.dispatcher
+    if parser.action is None:
 
-    # adds the functions to the bot function
-    dispatcher.add_handler(CommandHandler('start', bot.start))
+        # starts the telegram bot and adds the dispatcher for the functions
+        bot.start_bot()
 
-    dispatcher.add_handler(CommandHandler('send_joke', bot.send_joke))
+    elif parser.action == "send_joke_mail":
+        mail.send_mail()
 
-    dispatcher.add_handler(CommandHandler('rate_joke', bot.rate_joke))
+    elif parser.action == "validate_jokes":
+        validate.put_validated_jokes_in_joke_db()
 
-    dispatcher.add_handler(CommandHandler('validate_joke', bot.validate_joke))
-
-    # button rating
-    dispatcher.add_handler(CallbackQueryHandler(bot.button_rating))
-
-    logger.info('--- Starting bot ---')
-
-    # starts receiving calls
-    updater.start_polling(timeout=10)
-    updater.idle()
+    else:
+        raise Exception("Option for action not recognized: '{}'".format(parser.action))
 
