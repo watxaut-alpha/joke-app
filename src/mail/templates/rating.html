@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<br>
+<blockquote>
+    <p>{{ joke }}</p>
+</blockquote>
+<p>Rate the joke!</p>
+<form action="{{ host }}/rating/{{ joke_id }}/{{ id_hash }}" method="post" target="_blank">
+    <input type="submit" name="rating" value="0"/>
+    <input type="submit" name="rating" value="2.5"/>
+    <input type="submit" name="rating" value="5"/>
+    <input type="submit" name="rating" value="7.5"/>
+    <input type="submit" name="rating" value="10"/>
+</form>
+<br>
+<p>{{ signature }}</p>
+<hr>
+<p><sub>{{ disclaimer }}</sub></p>
+</body>
+</html>

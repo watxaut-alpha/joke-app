@@ -5,7 +5,7 @@ import traceback
 from email.mime.multipart import MIMEMultipart
 
 
-def send_mail(mail_user: str, mail_pwd: str, receivers: list, message: MIMEMultipart, email_text: str):
+def send_mail(mail_user: str, mail_pwd: str, receiver: str, message: MIMEMultipart):
     logger = logging.getLogger("jokeBot")
     try:
         if mail_user.endswith("gmail.com"):
@@ -18,11 +18,11 @@ def send_mail(mail_user: str, mail_pwd: str, receivers: list, message: MIMEMulti
         server.ehlo()
         server.login(mail_user, mail_pwd)
 
-        server.sendmail(mail_user, receivers, message.as_bytes())
+        server.sendmail(mail_user, receiver, message.as_bytes())
 
         server.close()
 
-        logger.info('Email sent!: "{}"'.format(email_text))
+        logger.info('Email sent!: "{}"'.format(message.as_string()))
 
         return True
     except:

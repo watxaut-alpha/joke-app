@@ -1,3 +1,4 @@
+aniso8601==8.0.0
 appnope==0.1.0
 asn1crypto==0.24.0
 attrs==19.2.0
@@ -8,12 +9,15 @@ cachetools==3.1.1
 certifi==2019.9.11
 cffi==1.12.3
 chardet==3.0.4
+Click==7.0
 constantly==15.1.0
 cryptography==2.7
 cssselect==1.1.0
 decorator==4.4.0
 defusedxml==0.6.0
 entrypoints==0.3
+Flask==1.1.1
+Flask-RESTful==0.3.7
 future==0.17.1
 google-api-python-client==1.7.11
 google-auth==1.6.3
@@ -27,6 +31,7 @@ ipykernel==5.1.2
 ipython==7.8.0
 ipython-genutils==0.2.0
 ipywidgets==7.5.1
+itsdangerous==1.1.0
 jedi==0.15.1
 Jinja2==2.10.1
 jsonschema==3.0.2
@@ -86,5 +91,6 @@ urllib3==1.25.6
 w3lib==1.21.0
 wcwidth==0.1.7
 webencodings==0.5.1
+Werkzeug==0.16.0
 widgetsnbextension==3.5.1
 zope.interface==4.6.0

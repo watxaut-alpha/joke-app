@@ -1,6 +1,6 @@
-import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from jinja2 import Template
 
 import src.mail.smtp as smtp
 
@@ -14,32 +14,31 @@ RECEIVERS = ["watxaut.alpha@gmail.com", ]
 SUBJECT = "CHISTE MALO DEL DÍA - NINI EDITION: RELOADED"
 
 
-def create_message(mail_user: str, receivers: list, joke: str, subject: str, signature: str, disclaimer: str):
+def create_message(mail_user: str, d_receiver: dict, d_joke: dict, subject: str, signature: str, disclaimer: str):
     email_text = """From: {}
 To: {}
 Subject: {}
 {}
-{}""".format(mail_user, ",".join(receivers), subject, joke, disclaimer)
+{}""".format(mail_user, d_receiver["email"], subject, d_joke["joke"], disclaimer)
 
-    email_html = """<html>
-  <body>
-    <br>
-    <blockquote>
-    <p>{joke}</p>
-    </blockquote>
-    <br>
-    <p>{signature}</p>
-    <hr>
-    <p><sub>{disclaimer}</sub></p>
-  </body>
-</html>
-""".format(joke=joke, signature=signature, disclaimer=disclaimer)
+    # load mail template for ratings
+    with open("src/mail/templates/rating.html", "r") as f_rating:
+        s_html = f_rating.read()
+
+    rating_template = Template(s_html)
+    email_html = rating_template.render(
+        joke=d_joke["joke"],
+        joke_id=d_joke["id"],
+        id_hash=d_receiver["id_hash"],
+        signature=signature,
+        disclaimer=disclaimer
+    )
 
     # fancy email with html
     message = MIMEMultipart("alternative")
     message["Subject"] = subject
     message["From"] = mail_user
-    message["To"] = ",".join(receivers)
+    message["To"] = d_receiver["email"]
 
     # Turn these into plain/html MIMEText objects
     part1 = MIMEText(email_text, "plain")
@@ -49,17 +48,19 @@ Subject: {}
     # The email client will try to render the last part first
     message.attach(part1)
     message.attach(part2)
-    return message, email_text
+    return message
 
 
-def send_mail(mail_user: str, mail_pwd: str, receivers: list, joke: str, subject: str, provider: str = "google"):
-    message, email_text = create_message(mail_user, receivers, joke, subject, SIGNATURE, DISCLAIMER)
+def send_mail(mail_user: str, mail_pwd: str, d_receivers: dict, d_joke: dict, subject: str, provider: str = "smtp"):
 
-    if provider == "smtp":
+    for d_receiver in d_receivers.values():
+        message = create_message(mail_user, d_receiver, d_joke, subject, SIGNATURE, DISCLAIMER)
 
-        is_sent = smtp.send_mail(mail_user, mail_pwd, receivers, message, email_text)
+        if provider == "smtp":
 
-    else:
-        raise Exception("Invalid provider. Must be one of ['smtp']")
+            is_sent = smtp.send_mail(mail_user, mail_pwd, d_receiver["email"], message)
 
-    return is_sent
+        else:
+            raise Exception("Invalid provider. Must be one of ['smtp']")
+
+    return True

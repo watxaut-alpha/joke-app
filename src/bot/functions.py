@@ -27,7 +27,7 @@ def start(bot: Bot, update: Update) -> None:
     db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
 
     # add user to DB
-    users.add_user(conn, user_id, first_name)
+    users.add_user_telegram(conn, user_id, first_name)
 
     # send telegram message
     bot_message = """Hey newcomer! This bot is able to send bad jokes (in spanish for the moment). You have 3 options:
