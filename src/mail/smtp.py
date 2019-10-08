@@ -22,7 +22,7 @@ def send_mail(mail_user: str, mail_pwd: str, receiver: str, message: MIMEMultipa
 
         server.close()
 
-        logger.info('Email sent!: "{}"'.format(message.as_string()))
+        logger.info('Email sent to : "{}"!'.format(receiver))
 
         return True
     except:

@@ -7,7 +7,7 @@ def init_flask():
     api = Api(app)
     api.add_resource(Main, "/")
 
-    api.add_resource(JokeRating, "/rating/<user_id>")  # the same as @app.route("/student/<string:name>")
+    api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>")  # the same as @app.route("/student/<string:name>")
 
     app.run(port=5000, debug=True)
 
@@ -20,8 +20,8 @@ class Main(Resource):
 
 class JokeRating(Resource):
 
-    def post(self, user_id):
-        print(user_id)
+    def post(self, joke_id, id_hash):
+        print(joke_id, id_hash)
         num = request.form.get('rating', "NaN")
         return {"rating": num}, 201
 

@@ -1,8 +1,11 @@
+import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+
 from jinja2 import Template
 
 import src.mail.smtp as smtp
+from src.db.secret import HOST, FLASK_PORT
 
 SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
 DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE 
@@ -25,14 +28,18 @@ Subject: {}
     with open("src/mail/templates/rating.html", "r") as f_rating:
         s_html = f_rating.read()
 
+    # add params with jinja2 and the html
     rating_template = Template(s_html)
     email_html = rating_template.render(
         joke=d_joke["joke"],
+        host=HOST,
+        port=FLASK_PORT,
         joke_id=d_joke["id"],
         id_hash=d_receiver["id_hash"],
         signature=signature,
         disclaimer=disclaimer
     )
+    print(email_html)
 
     # fancy email with html
     message = MIMEMultipart("alternative")
@@ -59,6 +66,7 @@ def send_mail(mail_user: str, mail_pwd: str, d_receivers: dict, d_joke: dict, su
         if provider == "smtp":
 
             is_sent = smtp.send_mail(mail_user, mail_pwd, d_receiver["email"], message)
+            time.sleep(1)
 
         else:
             raise Exception("Invalid provider. Must be one of ['smtp']")
