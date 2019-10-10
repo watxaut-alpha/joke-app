@@ -19,6 +19,11 @@ class JokeRating(Resource):
         print(joke_id, id_hash, rating)
         return {"rating": rating}, 201
 
+    def post(self, joke_id, id_hash):
+        rating = request.form.get("rating", "NaN")
+        print(joke_id, id_hash, rating)
+        return {"rating": rating}, 201
+
 
 api.add_resource(Main, "/")
 api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>/<rating>")  # the same as @app.route("/student/<string:name>")

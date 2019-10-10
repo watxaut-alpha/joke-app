@@ -9,18 +9,18 @@
     <p>{{ joke }}</p>
 </blockquote>
 <p>Rate the joke!</p>
-<!--<form action="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}" method="post" target="_blank">-->
-<!--    <input type="submit" name="rating" value="0"/>-->
-<!--    <input type="submit" name="rating" value="2.5"/>-->
-<!--    <input type="submit" name="rating" value="5"/>-->
-<!--    <input type="submit" name="rating" value="7.5"/>-->
-<!--    <input type="submit" name="rating" value="10"/>-->
-<!--</form>-->
-<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/0">0</a>
-<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/2.5">2.5</a>
-<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/5">5</a>
-<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/7.5">7.5</a>
-<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/10">10</a>
+<form action="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}" method="post" target="_blank">
+    <input type="submit" name="rating" value="0"/>
+    <input type="submit" name="rating" value="2.5"/>
+    <input type="submit" name="rating" value="5"/>
+    <input type="submit" name="rating" value="7.5"/>
+    <input type="submit" name="rating" value="10"/>
+</form>
+<!--<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/0">0</a>-->
+<!--<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/2.5">2.5</a>-->
+<!--<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/5">5</a>-->
+<!--<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/7.5">7.5</a>-->
+<!--<a href="{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/10">10</a>-->
 
 <br>
 <p>{{ signature }}</p>
