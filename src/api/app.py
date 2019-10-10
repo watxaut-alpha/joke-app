@@ -14,13 +14,12 @@ class Main(Resource):
 
 class JokeRating(Resource):
 
-    def post(self, joke_id, id_hash):
-        print(joke_id, id_hash)
-        num = request.form.get('rating', "NaN")
-        return {"rating": num}, 201
+    def get(self, joke_id, id_hash, rating):
+        print(joke_id, id_hash, rating)
+        return {"rating": rating}, 201
 
 
 api.add_resource(Main, "/")
-api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>")  # the same as @app.route("/student/<string:name>")
+api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>/<rating>")  # the same as @app.route("/student/<string:name>")
 
 app.run(port=5000, debug=True)
