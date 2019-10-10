@@ -12,7 +12,7 @@ if __name__ == '__main__':
     logger = logging.getLogger('jokeBot')
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-a", "--action", type=str, choices=['send_joke_mail', "validate_jokes"],
+    parser.add_argument("-a", "--action", type=str, choices=['send_joke_mail', "validate_jokes", "start_server"],
                         help="Type of action to run. Leave empty to run the bot")
 
     args = parser.parse_args()
