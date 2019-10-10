@@ -3,9 +3,6 @@ from flask_restful import Resource, Api  # resource is everything that the API c
 
 from src.db.secret import FLASK_PORT
 
-app = Flask(__name__)
-api = Api(app)
-
 
 class Main(Resource):
     def get(self):
@@ -25,7 +22,12 @@ class JokeRating(Resource):
         return {"rating": rating}, 201
 
 
-api.add_resource(Main, "/")
-api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>/<rating>")  # the same as @app.route("/student/<string:name>")
+def start_server():
+    app = Flask(__name__)
+    api = Api(app)
 
-app.run(port=FLASK_PORT, debug=True, host="0.0.0.0")
+    api.add_resource(Main, "/")
+    api.add_resource(JokeRating,
+                     "/rating/<joke_id>/<id_hash>/<rating>")  # the same as @app.route("/student/<string:name>")
+
+    app.run(port=FLASK_PORT, debug=True, host="0.0.0.0")

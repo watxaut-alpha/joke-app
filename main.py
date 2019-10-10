@@ -4,6 +4,7 @@ import logging
 import src.bot.start as bot
 import src.tasks.mail as mail
 import src.tasks.validate as validate
+import src.api.app as api
 
 if __name__ == '__main__':
 
@@ -26,6 +27,9 @@ if __name__ == '__main__':
 
     elif args.action == "validate_jokes":
         validate.put_validated_jokes_in_joke_db()
+
+    elif args.action == "start_server":
+        api.start_server()
 
     else:
         raise Exception("Option for action not recognized: '{}'".format(args.action))
