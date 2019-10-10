@@ -22,4 +22,4 @@ class JokeRating(Resource):
 api.add_resource(Main, "/")
 api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>/<rating>")  # the same as @app.route("/student/<string:name>")
 
-app.run(port=5000, debug=True)
+app.run(port=5000, debug=True, host="0.0.0.0")
