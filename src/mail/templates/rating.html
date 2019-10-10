@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
 <br>
@@ -15,6 +17,11 @@
 <a href="http://{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/7.5">7.5</a>
 <a href="http://{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/10">10</a>
 
+<a href="http://{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/5" class="btn btn-dark">5/10</a>
+<button type="button" class="btn btn-dark">Dark</button>
+<form action="http://{{ host }}:{{ port }}/rating/{{ joke_id }}/{{ id_hash }}/5">
+    <input type="submit" value="5/10" />
+</form>
 <br>
 <p>{{ signature }}</p>
 <hr>
