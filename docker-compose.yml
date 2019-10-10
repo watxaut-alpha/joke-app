@@ -1,0 +1,14 @@
+version: '1'
+services:
+  joke-telegram:
+    build: .Dockerfile
+    volumes:
+      - .:/usr/src/app
+  joke-flask:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/code
+    environment:
+      FLASK_ENV: development

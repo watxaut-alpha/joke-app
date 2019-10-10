@@ -47,3 +47,8 @@ def add_user_mail(conn: Engine, email: str) -> bool:
     else:
         print("User with email: '{}' already exists. Skipping..".format(email))
     return True
+
+# from src.db.secret import HOST_OVH, POSTGRES_USER, POSTGRES_PASSWORD_OVH, SCHEMA_NAME
+# conn = db.connect(HOST_OVH, POSTGRES_USER, POSTGRES_PASSWORD_OVH, SCHEMA_NAME)
+#
+# add_user_mail(conn, "watxaut@gmail.com")

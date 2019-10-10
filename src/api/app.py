@@ -1,15 +1,9 @@
-from flask import Flask, request, render_template, make_response  # , jsonify   # no need to jsonify, because Flask RESTful does it for us
+from flask import Flask, request, render_template, make_response
 from flask_restful import Resource, Api  # resource is everything that the API can return
 
 
-def init_flask():
-    app = Flask(__name__)
-    api = Api(app)
-    api.add_resource(Main, "/")
-
-    api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>")  # the same as @app.route("/student/<string:name>")
-
-    app.run(port=5000, debug=True)
+app = Flask(__name__)
+api = Api(app)
 
 
 class Main(Resource):
@@ -26,4 +20,7 @@ class JokeRating(Resource):
         return {"rating": num}, 201
 
 
-init_flask()
+api.add_resource(Main, "/")
+api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>")  # the same as @app.route("/student/<string:name>")
+
+app.run(port=5000, debug=True)
