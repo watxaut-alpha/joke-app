@@ -1,14 +1,16 @@
-version: '1'
+version: '3'
 services:
   joke-telegram:
-    build: .Dockerfile
-    volumes:
-      - .:/usr/src/app
+    image: joke-telegram:0.4.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    links:
+      - joke-flask
   joke-flask:
-    build: .
+    image: joke-flask:0.0.1
+    build:
+      context: .
+      dockerfile: Dockerfile-flask
     ports:
-      - "5000:5000"
-    volumes:
-      - .:/code
-    environment:
-      FLASK_ENV: development
+      - "5050:5050"

@@ -1,12 +1,12 @@
 .PHONY: run build
 
 build:
-	docker build -t jokes-app:0.3.0 .
+	docker-compose build
 
 run:
-	docker run -it --rm --name jokes-app-docker jokes-app:0.3.0
+	docker-compose up
 
 stop:
-	@echo "Stopping docker for jokes app"
-	docker stop jokes-app-docker
+	@echo "Stopping docker for jokes app and Flask app"
+	docker-compose down
 
