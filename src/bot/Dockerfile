@@ -1,5 +1,10 @@
-FROM python:3.7.4-alpine3.10
+FROM python:3.7.4
 
-RUN pip3 install -r requirements.txt
+WORKDIR /usr/src/app
 
-CMD ["python3" "main.py"]
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD [ "python", "./main.py" ]
