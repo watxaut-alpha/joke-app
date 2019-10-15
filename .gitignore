@@ -202,8 +202,8 @@ ENV/
 env.bak/
 venv.bak/
 
-src/api/venv-api
-src/bot/venv-bot
+src/api/venv-api/
+src/bot/venv-bot/
 
 # Spyder project settings
 .spyderproject
