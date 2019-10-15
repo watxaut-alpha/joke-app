@@ -51,6 +51,12 @@ async def main(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "url": url})
 
 
+@app.get("/legal/")
+async def legal(request: Request):
+
+    return templates.TemplateResponse("legal.html", {"request": request})
+
+
 @app.post("/user/telegram/add", status_code=201)
 async def add_user(user: TelegramUser):
     users.add_user_telegram(user.user_id, user.first_name)
