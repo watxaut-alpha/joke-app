@@ -31,6 +31,24 @@ def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None
     db.add_record(conn, model, d_values)
 
 
+def upsert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None:
+    sql = """
+INSERT INTO ratings (user_id, joke_id, rating, created_at) 
+VALUES ('{user_id}', {joke_id}, {rating}, '{created_at}')
+ON CONFLICT (user_id, joke_id) 
+DO UPDATE 
+SET rating = {rating};
+    """.format(
+        user_id=user_id,
+        joke_id=joke_id,
+        rating=rating,
+        created_at=datetime.datetime.now().isoformat()
+    )
+
+    conn = db.get_jokes_app_connection()
+    db.execute_update(conn, sql)
+
+
 def put_joke_db(conn: Engine, joke: str, author: str) -> None:
     model = "jokes"
     d_values = {

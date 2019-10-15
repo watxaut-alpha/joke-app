@@ -81,14 +81,19 @@ async def send_random_joke():
 
 @app.get("/jokes/rating/{joke_id}/{id_hash}/{rating}")
 async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: float):
-    jokes.insert_rating_joke(id_hash, joke_id, rating)
-    return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
+
+    if 0 <= rating <= 10:
+        jokes.upsert_rating_joke(id_hash, joke_id, rating)
+        return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
+    else:
+        reason = "Your rating is invalid, like Clarita"
+        return templates.TemplateResponse("nope.html", {"request": request, "reason": reason})
 
 
 # define the same method but with put
 @app.put("/jokes/rating")
 async def joke_rating_put(user_rating: UserRating):
-    jokes.insert_rating_joke(**user_rating.dict())
+    jokes.upsert_rating_joke(**user_rating.dict())
     return {"message": "success"}
 
 
