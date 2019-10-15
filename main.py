@@ -1,7 +1,6 @@
 import argparse
 import logging
 
-import src.bot.main as bot
 import src.tasks.send as mail
 import src.tasks.validate as validate
 
@@ -16,12 +15,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.action is None:
-
-        # starts the telegram bot and adds the dispatcher for the functions
-        bot.start_bot()
-
-    elif args.action == "send_joke_mail":
+    if args.action == "send_joke_mail":
         mail.send_mail()
 
     elif args.action == "validate_jokes":

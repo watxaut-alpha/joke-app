@@ -10,6 +10,7 @@ import src.db.jokes as jokes
 import src.db.users as users
 import src.db.validation as validation
 
+# uvicorn main:app --host 0.0.0.0 --port 5050
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")

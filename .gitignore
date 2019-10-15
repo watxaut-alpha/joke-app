@@ -1,5 +1,6 @@
 # ignore all secrets
 *secret.py
+*config.py
 insert_jokes.py
 newjokes2.json
 
