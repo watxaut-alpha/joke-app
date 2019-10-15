@@ -3,6 +3,13 @@
 .venv
 venv/
 
+.venv-api
+venv-api/
+.venv-bot
+venv-bot/
+src/api/venv-api
+src/bot/venv-bot
+
 # exclude notebooks because not needed in docker
 notebooks/
 

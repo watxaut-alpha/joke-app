@@ -1,10 +1,10 @@
 import logging
 
-import src.mail.core as mail
-import src.db.jokes as jokes
-import src.db.core as db
-import src.db.users as users
-from src.mail.secret import YAHOO_USER as USER, YAHOO_PWD as PASSWORD
+import src.tasks.mail.core as mail
+import src.api.src.db.jokes as jokes
+import src.api.src.db.core as db
+import src.api.src.db.users as users
+from src.tasks.mail.secret import YAHOO_USER as USER, YAHOO_PWD as PASSWORD
 
 
 def send_mail():

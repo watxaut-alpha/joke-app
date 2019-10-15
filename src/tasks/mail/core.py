@@ -4,9 +4,9 @@ from email.mime.text import MIMEText
 
 from jinja2 import Template
 
-import src.mail.smtp as smtp
-from src.db.secret import HOST
-from src.api.secret import FLASK_PORT
+import src.tasks.mail.smtp as smtp
+from src.api.src.db.secret import HOST
+from src.api import FLASK_PORT
 
 SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
 DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE 

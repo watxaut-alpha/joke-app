@@ -1,16 +1,16 @@
 version: '3'
 services:
   joke-telegram:
-    image: joke-telegram:0.4.0
+    image: joke-telegram:0.5.0
     build:
-      context: .
+      context: ./src/bot/
       dockerfile: Dockerfile
     links:
-      - joke-flask
-  joke-flask:
-    image: joke-flask:0.0.1
+      - joke-api
+  joke-api:
+    image: joke-api:0.0.1
     build:
-      context: .
-      dockerfile: Dockerfile-flask
+      context: ./src/api
+      dockerfile: Dockerfile
     ports:
       - "5050:5050"

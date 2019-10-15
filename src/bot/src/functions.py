@@ -2,32 +2,22 @@ import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import Bot, Update
 
-import src.db.core as db
-import src.db.helpers as db_helpers
-import src.db.users as users
-import src.db.constants as db_ct
-import src.db.jokes as jokes
-import src.db.twitter as twitter_db
+import src.api as api
 
-logger = logging.getLogger('jokeBot')
+logger = logging.getLogger(__name__)
+
+TIMEOUT_MSG = "Oops, something went wrong with the API. Try again later"
 
 
 def start(bot: Bot, update: Update) -> None:
     logger.info('Command start issued')
 
     # get user info coming from telegram message
-    user_id = update.message.chat.id
+    user_id = str(update.message.chat.id)
     first_name = update.message.chat.first_name
-    message = update.message.text
-
-    # instance connection to PSQL DB
-    conn = db.get_jokes_app_connection()
-
-    # add log
-    db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
 
     # add user to DB
-    users.add_user_telegram(conn, user_id, first_name)
+    response = api.add_user_telegram(user_id, first_name)
 
     # send telegram message
     bot_message = """Hey newcomer! This bot is able to send bad jokes (in spanish for the moment). You have 3 options:
@@ -42,70 +32,40 @@ def start(bot: Bot, update: Update) -> None:
         text=bot_message
     )
 
-    # add log
-    db_helpers.add_telegram_log(conn, db_ct.BOT, bot_message, user_id, "name", first_name)
-
-    conn = None
-
 
 def send_joke(bot: Bot, update: Update) -> None:
+
     logger.info('Command send_joke issued')
 
-    # get user info coming from telegram message
-    user_id = update.message.chat.id
-    first_name = update.message.chat.first_name
-    message = update.message.text
-
-    # instance connection to PSQL DB
-    conn = db.get_jokes_app_connection()
-
-    # add log
-    db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
-
-    # query random joke and return only one in a pandas DF
-    df = jokes.get_random_joke(conn)
-
-    # unpack joke info and send it to telegram
-    str_joke = df["joke"][0]
-    id_joke = df["id"][0]
+    # query random joke from API
+    response = api.get_random_joke()
+    if response:
+        str_joke = response.json()["joke"]
+    else:
+        str_joke = "Oops, something went wrong. Try again later"
 
     bot.send_message(
         chat_id=update.message.chat_id,
         text=str_joke
     )
-
-    db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "joke_id", id_joke)
-
-    conn = None
 
 
 def rate_joke(bot: Bot, update: Update) -> None:
     logger.info('Command rate_joke issued')
 
-    # get user info coming from telegram message
-    user_id = update.message.chat.id
-    first_name = update.message.chat.first_name
-    message = update.message.text
-
-    # instance connection to PSQL DB
-    conn = db.get_jokes_app_connection()
-
-    # add log
-    db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
-
-    # query random joke and return only one in a pandas DF
-    df = jokes.get_random_joke(conn)
-
-    # unpack joke info and send it to telegram
-    str_joke = df["joke"][0]
-    id_joke = df["id"][0]
+    # query random joke from API
+    response = api.get_random_joke()
+    if response:
+        str_joke = response.json()["joke"]
+        id_joke = response.json()["joke_id"]
+    else:
+        str_joke = TIMEOUT_MSG
+        id_joke = -1
 
     bot.send_message(
         chat_id=update.message.chat_id,
         text=str_joke
     )
-
-    db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "joke_id", id_joke)
 
     # ratings
     s_ratings = "id: {id_joke} - How would you rate this joke?".format(id_joke=id_joke)
@@ -120,8 +80,6 @@ def rate_joke(bot: Bot, update: Update) -> None:
 
     update.message.reply_text(s_ratings, reply_markup=reply_markup)
 
-    conn = None
-
 
 def button_rating(bot: Bot, update: Update) -> None:
 
@@ -130,8 +88,6 @@ def button_rating(bot: Bot, update: Update) -> None:
     user_id = update.callback_query.from_user.id
     bot_message = update.callback_query.message.text
     user_response = update.callback_query.data
-
-    conn = db.get_jokes_app_connection()
 
     # TODO: I dont like this approach, there should be another..
     if "rate" in bot_message:
@@ -143,7 +99,7 @@ def button_rating(bot: Bot, update: Update) -> None:
         # erase and get id "id: {id} - sdmcsdcma"
         joke_id = int(bot_message[4:].split(" - ")[0])
 
-        jokes.insert_rating_joke(conn, user_id, joke_id, f_rating)
+        request = api.insert_rating_joke(user_id, joke_id, f_rating)
 
     elif "joke" in bot_message:
         new_text = "Thanks for the feedback! :DD"
@@ -151,46 +107,39 @@ def button_rating(bot: Bot, update: Update) -> None:
         is_joke = "1" == user_response
 
         # erase and get id "id: {id} - sdmcsdcma"
-        tweet_str_id = int(bot_message[4:].split(" - ")[0])
+        validated_joke_id = int(bot_message[4:].split(" - ")[0])
 
-        twitter_db.update_joke_validation(conn, tweet_str_id, user_id, is_joke)
+        request = api.update_joke_validation(validated_joke_id, user_id, is_joke)
     else:
         new_text = "Thanks for the feedback brah! :DD"
 
     bot.editMessageText(new_text, chat_id=chat_id, message_id=message_id)
 
-    conn = None
-
 
 def validate_joke(bot: Bot, update: Update) -> None:
     logger.info('Command validate_joke issued')
 
-    # get user info coming from telegram message
-    user_id = update.message.chat.id
-    first_name = update.message.chat.first_name
-    message = update.message.text
-
-    # instance connection to PSQL DB
-    conn = db.get_jokes_app_connection()
-
-    # add log
-    db_helpers.add_telegram_log(conn, db_ct.USER, message, user_id, "name", first_name)
-
     # query random joke and return only one in a pandas DF
-    df = twitter_db.get_random_twitter_joke(conn)
+    response = api.get_random_twitter_joke()
 
-    if not df.empty:
+    if response:
         # unpack joke info and send it to telegram
-        str_joke = df["joke"][0]
-        id_joke = df["id"][0]
+        str_joke = response.json()["joke"]
+        id_joke = response.json()["joke_id"]
 
+        if id_joke == -1:  # API connects but no more jokes to validate
+
+            bot.send_message(
+                chat_id=update.message.chat_id,
+                text="Whoops! No more jokes to validate"
+            )
+            return
+
+        # else send message
         bot.send_message(
             chat_id=update.message.chat_id,
             text=str_joke
         )
-
-        db_helpers.add_telegram_log(conn, db_ct.BOT, message, user_id, "twitter_joke_id", id_joke)
-
         # ratings
         s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
 
@@ -203,10 +152,7 @@ def validate_joke(bot: Bot, update: Update) -> None:
 
     else:  # the table of twitter jokes is already all validated
 
-        s_message = "Whoops there is no more jokes to validate!"
         bot.send_message(
             chat_id=update.message.chat_id,
-            text=s_message
+            text=TIMEOUT_MSG
         )
-
-    conn = None

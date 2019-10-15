@@ -21,26 +21,29 @@ def add_joke_to_twitter_table(conn: Engine, d_joke: dict) -> None:
     db.add_record(conn, model, d_joke)
 
 
-def get_random_twitter_joke(conn: Engine) -> pd.DataFrame:
+def get_random_twitter_joke() -> pd.DataFrame:
+    conn = db.get_jokes_app_connection()
     return db.get_random_element(conn, "validate_twitter_jokes", where="is_joke is null")
 
 
-def update_joke_validation(conn: Engine, tweet_str_id: str, validated_by_user: int, is_joke: bool) -> None:
+def update_joke_validation(joke_id: str, user_id: str, is_joke: bool) -> None:
+
+    conn = db.get_jokes_app_connection()
     sql = """
 update 
     validate_twitter_jokes 
 set 
     is_joke = {is_joke}, 
-    validated_by_user_id = {validated_by_user}, 
+    validated_by_user_id = '{validated_by_user}', 
     updated_at='{updated_at}'
 where 
-    id = {tweet_str_id}
+    id = {joke_id}
 
 """.format(
         is_joke=is_joke,
-        validated_by_user=validated_by_user,
+        validated_by_user=user_id,
         updated_at=datetime.datetime.now().isoformat(),
-        tweet_str_id=tweet_str_id
+        joke_id=joke_id
     )
 
     db.execute_update(conn, sql)

@@ -7,8 +7,8 @@ newjokes2.json
 *~
 
 # auth for google Gmail
-src/mail/google/credentials.json
-src/mail/google/token.pickle
+src/tasks/mail/google/credentials.json
+src/tasks/mail/google/token.pickle
 
 # GITIGNORE.IO[PYTHON, PYCHARM]
 # Created by https://www.gitignore.io/api/python,pycharm
@@ -200,6 +200,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+src/api/venv-api
+src/bot/venv-bot
 
 # Spyder project settings
 .spyderproject
