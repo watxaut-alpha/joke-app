@@ -13,4 +13,4 @@ services:
       context: ./src/api
       dockerfile: Dockerfile
     ports:
-      - "5050:5050"
+      - "8080:8080"
