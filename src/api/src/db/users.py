@@ -5,12 +5,14 @@ from sqlalchemy.engine import Engine
 import src.db.core as db
 
 
-def has_db_telegram_user(conn: Engine, user_id: int) -> bool:
-    df = db.execute_read(conn, "select id from users where user_id = {}".format(user_id))
+def has_db_telegram_user(conn: Engine, user_id: str) -> bool:
+    df = db.execute_read(conn, "select id from users where user_id = '{}'".format(user_id))
     return not df.empty  # returns true if the user is in the DB
 
 
-def add_user_telegram(conn: Engine, user_id: int, first_name: str) -> bool:
+def add_user_telegram(user_id: str, first_name: str) -> bool:
+
+    conn = db.get_jokes_app_connection()
 
     if not has_db_telegram_user(conn, user_id):
         d_user = {

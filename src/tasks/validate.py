@@ -1,6 +1,6 @@
 import logging
 
-import src.db.core as db
+import src.api.src.db.core as db
 
 
 def put_validated_jokes_in_joke_db():

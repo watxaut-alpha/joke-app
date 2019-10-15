@@ -6,7 +6,8 @@ from sqlalchemy.engine import Engine
 import src.db.core as db
 
 
-def get_random_joke(conn: Engine) -> pd.DataFrame:
+def get_random_joke() -> pd.DataFrame:
+    conn = db.get_jokes_app_connection()
     return db.get_random_element(conn, "jokes")
 
 
@@ -14,7 +15,8 @@ def get_random_joke_not_sent_by_mail_already(conn: Engine) -> pd.DataFrame:
     return db.get_random_element(conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)")
 
 
-def insert_rating_joke(conn: Engine, user_id: int, joke_id: int, rating: float) -> None:
+def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None:
+    conn = db.get_jokes_app_connection()
 
     model = "ratings"
     d_values = {

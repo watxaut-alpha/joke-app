@@ -1,8 +1,8 @@
 import argparse
 import logging
 
-import src.bot.start as bot
-import src.tasks.mail as mail
+import src.bot.main as bot
+import src.tasks.send as mail
 import src.tasks.validate as validate
 
 if __name__ == '__main__':

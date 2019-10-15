@@ -1,48 +1,97 @@
 import requests
-from flask import Flask, render_template, make_response
-from flask_restful import Resource, Api  # resource is everything that the API can return
 
-try:
-    from src.api.secret import FLASK_PORT
-except ModuleNotFoundError:
-    from secret import FLASK_PORT
+from fastapi import FastAPI
+from starlette.requests import Request
+from starlette.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
+from pydantic import BaseModel
 
+import src.db.jokes as jokes
+import src.db.users as users
+import src.db.validation as validation
 
-app = Flask(__name__)
-api = Api(app)
+app = FastAPI()
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-class Main(Resource):
-    def get(self):
-        headers = {'Content-Type': 'text/html'}
-        r_cat = requests.get("https://api.thecatapi.com/v1/images/search")
-        if r_cat:  # status 200
-            url = r_cat.json()[0]["url"]
-        else:
-            url = "Cat not found"
-
-        return make_response(render_template('index.html', url=url), 200, headers)
+templates = Jinja2Templates(directory="templates")
 
 
-class JokeRating(Resource):
-
-    def get(self, joke_id, id_hash, rating):
-        print(joke_id, id_hash, rating)
-
-        return make_response(render_template('thanks_rating.html', rating=rating), 200, {'Content-Type': 'text/html'})
-
-    # def post(self, joke_id, id_hash):
-    #     rating = request.form.get("rating", "NaN")
-    #     print(joke_id, id_hash, rating)
-    #     return {"rating": rating}, 201
+class TelegramUser(BaseModel):
+    user_id: str
+    first_name: str
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+class UserRating(BaseModel):
+    user_id: str
+    joke_id: int
+    rating: float
 
 
-api.add_resource(Main, "/")
-api.add_resource(JokeRating, "/rating/<joke_id>/<id_hash>/<rating>")
+class UserValidation(BaseModel):
+    joke_id: int
+    user_id: str
+    is_joke: bool
 
-app.run(port=FLASK_PORT, host="0.0.0.0")
+
+@app.get("/")
+async def main(request: Request):
+
+    r_cat = requests.get("https://api.thecatapi.com/v1/images/search")
+    if r_cat:  # status 200
+        url = r_cat.json()[0]["url"]
+    else:
+        url = "Cat not found"
+
+    return templates.TemplateResponse("index.html", {"request": request, "url": url})
+
+
+@app.post("/user/add", status_code=201)
+async def add_user(user: TelegramUser):
+    users.add_user_telegram(user.user_id, user.first_name)
+    return user
+
+
+@app.get("/jokes/random")
+async def send_random_joke():
+    df = jokes.get_random_joke()
+    response = {
+        "joke_id": int(df["id"][0]),
+        "joke": df["joke"][0]
+    }
+    return response
+
+
+@app.get("/jokes/rating/{joke_id}/{id_hash}/{rating}")
+async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: float):
+    jokes.insert_rating_joke(id_hash, joke_id, rating)
+    return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
+
+
+# define the same method but with put
+@app.put("/jokes/rating")
+async def joke_rating_put(user_rating: UserRating):
+    jokes.insert_rating_joke(**user_rating.dict())
+    return {"message": "success"}
+
+
+@app.put("/jokes/validate")
+async def update_joke_validation(user_validation: UserValidation):
+    validation.update_joke_validation(**user_validation.dict())
+    return {"message": "success"}
+
+
+@app.get("/jokes/validate/random")
+async def get_random_validate_joke():
+    df = validation.get_random_twitter_joke()
+    if not df.empty:
+        response = {
+            "joke": df["joke"][0],
+            "joke_id": int(df["id"][0])
+        }
+    else:
+        response = {
+            "joke": "No more jokes to validate",
+            "joke_id": -1
+        }
+    return response
