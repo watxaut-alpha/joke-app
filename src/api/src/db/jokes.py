@@ -3,7 +3,10 @@ import datetime
 import pandas as pd
 from sqlalchemy.engine import Engine
 
-import src.db.core as db
+try:
+    import src.db.core as db
+except ModuleNotFoundError:
+    import src.api.src.db.core as db
 
 
 def get_random_joke() -> pd.DataFrame:

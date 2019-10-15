@@ -3,7 +3,10 @@ from sqlalchemy.engine import Engine
 import pandas as pd
 
 
-import src.db.core as db
+try:
+    import src.db.core as db
+except ModuleNotFoundError:
+    import src.api.src.db.core as db
 
 
 def has_twitter_db_joke(conn: Engine, tweet_str_id: str) -> bool:

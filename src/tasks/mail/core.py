@@ -6,7 +6,9 @@ from jinja2 import Template
 
 import src.tasks.mail.smtp as smtp
 from src.api.src.db.secret import HOST
-from src.api import FLASK_PORT
+
+
+FLASK_PORT = "5050"
 
 SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
 DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE 
@@ -26,7 +28,7 @@ Subject: {}
 {}""".format(mail_user, d_receiver["email"], subject, d_joke["joke"], disclaimer)
 
     # load mail template for ratings
-    with open("src/mail/templates/rating.html", "r") as f_rating:
+    with open("src/tasks/mail/templates/mail_joke.html", "r") as f_rating:
         s_html = f_rating.read()
 
     # add params with jinja2 and the html

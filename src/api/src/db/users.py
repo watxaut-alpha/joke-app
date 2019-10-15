@@ -2,7 +2,10 @@ import datetime
 import uuid
 from sqlalchemy.engine import Engine
 
-import src.db.core as db
+try:
+    import src.db.core as db
+except ModuleNotFoundError:
+    import src.api.src.db.core as db
 
 
 def has_db_telegram_user(conn: Engine, user_id: str) -> bool:
