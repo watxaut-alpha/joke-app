@@ -38,8 +38,9 @@ def has_db_mail_user(conn: Engine, email: str) -> bool:
     return not df.empty
 
 
-def add_user_mail(conn: Engine, email: str) -> bool:
+def add_user_mail(email: str) -> bool:
 
+    conn = db.get_jokes_app_connection()
     if not has_db_mail_user(conn, email):
         s_uuid = str(uuid.uuid1())
         d_user_mail = {

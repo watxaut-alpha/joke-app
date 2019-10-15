@@ -23,6 +23,10 @@ class TelegramUser(BaseModel):
     first_name: str
 
 
+class MailUser(BaseModel):
+    email: str
+
+
 class UserRating(BaseModel):
     user_id: str
     joke_id: int
@@ -47,9 +51,15 @@ async def main(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "url": url})
 
 
-@app.post("/user/add", status_code=201)
+@app.post("/user/telegram/add", status_code=201)
 async def add_user(user: TelegramUser):
     users.add_user_telegram(user.user_id, user.first_name)
+    return user
+
+
+@app.post("/user/mail/add", status_code=201)
+async def add_user(user: MailUser):
+    users.add_user_mail(user.email)
     return user
 
 

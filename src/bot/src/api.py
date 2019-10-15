@@ -20,7 +20,7 @@ def connect(func):
 
 @connect
 def add_user_telegram(user_id: str, first_name: str) -> requests.Response:
-    url = "{host}:{port}/user/add".format(host=HOST, port=PORT)
+    url = "{host}:{port}/user/telegram/add".format(host=HOST, port=PORT)
     data = {
         'user_id': str(user_id),
         'first_name': first_name
