@@ -51,9 +51,13 @@ async def main(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "url": url})
 
 
+@app.exception_handler(404)
+async def not_found(request, exc):
+    return templates.TemplateResponse("404.html", {"request": request})
+
+
 @app.get("/legal/")
 async def legal(request: Request):
-
     return templates.TemplateResponse("legal.html", {"request": request})
 
 
