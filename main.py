@@ -22,11 +22,8 @@ if __name__ == '__main__':
     os.chdir(dname)
 
     if args.action == "send_joke_mail":
-
         mail.send_mail()
-
     elif args.action == "validate_jokes":
         validate.put_validated_jokes_in_joke_db()
-
     else:
         raise Exception("Option for action not recognized: '{}'".format(args.action))

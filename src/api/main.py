@@ -39,6 +39,12 @@ class UserValidation(BaseModel):
     is_joke: bool
 
 
+class UserTag(BaseModel):
+    joke_id: int
+    user_id: str
+    tag_id: int
+
+
 @app.get("/")
 async def main(request: Request):
 
@@ -105,6 +111,34 @@ async def joke_rating_put(user_rating: UserRating):
 async def update_joke_validation(user_validation: UserValidation):
     validation.update_joke_validation(**user_validation.dict())
     return {"message": "success"}
+
+
+@app.get("/jokes/tags")
+async def get_tags():
+    l_tags = jokes.get_tags()
+    return {"tags": l_tags}
+
+
+@app.put("/jokes/tag")
+async def tag_joke(user_tag: UserTag):
+    jokes.upsert_joke_tag(**user_tag.dict())
+    return {"message": "success"}
+
+
+@app.get("/jokes/tags/random")
+async def get_untagged_joke():
+    df = jokes.get_untagged_joke()
+    if not df.empty:
+        response = {
+            "joke": df["joke"][0],
+            "joke_id": int(df["id"][0])
+        }
+    else:
+        response = {
+            "joke": "No more jokes to tag",
+            "joke_id": -1
+        }
+    return response
 
 
 @app.get("/jokes/validate/random")

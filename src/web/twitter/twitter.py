@@ -47,7 +47,7 @@ def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> Li
     for tweet in l_user_timeline:
         if "https" not in tweet.text:  # https not in text for only text jokes, not images
             d_tweet = {
-                "tweet_str_id": tweet.id_str,
+                "hash_id": tweet.id_str,
                 "user_name": user_name,
                 "user_str_id": tweet.author.id_str,
                 "joke": tweet.text
@@ -90,6 +90,6 @@ def add_jokes_to_twitter_table() -> None:
 
     # input new jokes in the DB
     for d_new_joke in l_jokes:
-        if not twitter_db.has_twitter_db_joke(conn, d_new_joke["tweet_str_id"]):
+        if not twitter_db.has_twitter_db_joke(conn, d_new_joke["hash_id"]):
             twitter_db.add_joke_to_twitter_table(conn, d_new_joke)
 

@@ -44,9 +44,25 @@ SET rating = {rating};
         rating=rating,
         created_at=datetime.datetime.now().isoformat()
     )
-
     conn = db.get_jokes_app_connection()
     db.execute_update(conn, sql)
+
+
+def upsert_joke_tag(user_id: [str, int], joke_id: int, tag_id: int):
+    sql = """
+INSERT INTO joke_tags (user_id, joke_id, tag_id, created_at) 
+VALUES ('{user_id}', {joke_id}, {tag_id}, '{created_at}')
+ON CONFLICT (user_id, joke_id, tag_id) 
+DO NOTHING;
+        """.format(
+        user_id=user_id,
+        joke_id=joke_id,
+        tag_id=tag_id,
+        created_at=datetime.datetime.now().isoformat()
+    )
+    conn = db.get_jokes_app_connection()
+    a = db.execute_update(conn, sql)
+    print(a, 2)
 
 
 def put_joke_db(conn: Engine, joke: str, author: str) -> None:
@@ -58,7 +74,6 @@ def put_joke_db(conn: Engine, joke: str, author: str) -> None:
         "tags": "",
         "created_at": datetime.datetime.now().isoformat()
     }
-
     db.add_record(conn, model, d_values)
 
 
@@ -68,5 +83,16 @@ def put_sent_joke_db(conn: Engine, joke_id: int) -> None:
         "joke_id": joke_id,
         "created_at": datetime.datetime.now().isoformat()
     }
-
     db.add_record(conn, model, d_values)
+
+
+def get_tags():
+    conn = db.get_jokes_app_connection()
+    sql = "select * from tags"
+    df_tags = db.execute_read(conn, sql)
+    return df_tags.to_dict(orient="index")
+
+
+def get_untagged_joke():
+    conn = db.get_jokes_app_connection()
+    return db.get_random_element(conn, "jokes", where="id not in (select joke_id from joke_tags group by joke_id)")

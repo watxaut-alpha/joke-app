@@ -1,6 +1,7 @@
 import logging
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 from telegram import Bot, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 import src.api as api
 
@@ -110,6 +111,13 @@ def button_rating(bot: Bot, update: Update) -> None:
         validated_joke_id = int(bot_message[4:].split(" - ")[0])
 
         request = api.update_joke_validation(validated_joke_id, user_id, is_joke)
+    elif "Tag" in bot_message:
+        # erase and get id "id: {id} - sdmcsdcma"
+        tagged_joke_id = int(bot_message[4:].split(" - ")[0])
+
+        logger.info("Tagging joke {}, {}, {}".format(tagged_joke_id, user_id, user_response))
+        request = api.tag_joke(tagged_joke_id, user_id, user_response)
+        return None  # we don't want the keyboard to disappear
     else:
         new_text = "Thanks for the feedback brah! :DD"
 
@@ -120,7 +128,7 @@ def validate_joke(bot: Bot, update: Update) -> None:
     logger.info('Command validate_joke issued')
 
     # query random joke and return only one in a pandas DF
-    response = api.get_random_twitter_joke()
+    response = api.get_random_validation_joke()
 
     if response:
         # unpack joke info and send it to telegram
@@ -133,7 +141,7 @@ def validate_joke(bot: Bot, update: Update) -> None:
                 chat_id=update.message.chat_id,
                 text="Whoops! No more jokes to validate"
             )
-            return
+            return None
 
         # else send message
         bot.send_message(
@@ -156,3 +164,38 @@ def validate_joke(bot: Bot, update: Update) -> None:
             chat_id=update.message.chat_id,
             text=TIMEOUT_MSG
         )
+
+
+def tag_joke(bot: Bot, update: Update) -> None:
+    logger.info('Command tag_joke issued')
+
+    r_joke = api.get_untagged_joke()
+    if r_joke:
+        # unpack joke info and send it to telegram
+        str_joke = r_joke.json()["joke"]
+        id_joke = r_joke.json()["joke_id"]
+        bot.send_message(
+            chat_id=update.message.chat_id,
+            text=str_joke
+        )
+
+        if id_joke == -1:  # API connects but no more jokes to tag
+            return
+
+        # query random joke and return only one in a pandas DF
+        r_tags = api.get_tags()
+
+        if r_tags:
+            n = 4
+            d_tags = r_tags.json()["tags"]
+            l_tags = list(d_tags.values())
+            l_group = [l_tags[i:i + n] for i in range(0, len(l_tags), n)]
+            keyboard = []
+            for l_line in l_group:
+                l_inline = [InlineKeyboardButton(tag["name"], callback_data=tag["id"]) for tag in l_line]
+                keyboard.append(l_inline)
+
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
+            s_tag = "id: {id_joke} - Tag this! (as many tags as you want)".format(id_joke=id_joke)
+            update.message.reply_text(s_tag, reply_markup=reply_markup)

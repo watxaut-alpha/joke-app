@@ -31,7 +31,7 @@ class MilChistesSpider(scrapy.Spider):
                 url_id = joke.css("a[class='compartir']::attr('href')")[0].get()
 
                 d_joke = {
-                    "tweet_str_id": url_id,
+                    "hash_id": url_id,
                     "user_str_id": "1000Chistes",
                     "user_name": "1000Chistes",
                     "joke": s_joke

@@ -57,6 +57,29 @@ def update_joke_validation(validated_joke_id: int, user_id: str, is_joke: bool) 
 
 
 @connect
-def get_random_twitter_joke() -> requests.Response:
+def get_random_validation_joke() -> requests.Response:
     url = "{host}:{port}/jokes/validate/random".format(host=HOST, port=PORT)
     return requests.get(url, timeout=TIMEOUT)
+
+
+@connect
+def get_untagged_joke() -> requests.Response:
+    url = "{host}:{port}/jokes/tags/random".format(host=HOST, port=PORT)
+    return requests.get(url, timeout=TIMEOUT)
+
+
+@connect
+def get_tags() -> requests.Response:
+    url = "{host}:{port}/jokes/tags".format(host=HOST, port=PORT)
+    return requests.get(url, timeout=TIMEOUT)
+
+
+@connect
+def tag_joke(joke_id, user_id, tag_id) -> requests.Response:
+    url = "{host}:{port}/jokes/tag".format(host=HOST, port=PORT)
+    data = {
+        'joke_id': joke_id,
+        "user_id": user_id,
+        'tag_id': tag_id
+    }
+    return requests.put(url, json=data, timeout=TIMEOUT)

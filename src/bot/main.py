@@ -20,6 +20,7 @@ dispatcher.add_handler(CommandHandler('start', functions.start))
 dispatcher.add_handler(CommandHandler('send_joke', functions.send_joke))
 dispatcher.add_handler(CommandHandler('rate_joke', functions.rate_joke))
 dispatcher.add_handler(CommandHandler('validate_joke', functions.validate_joke))
+dispatcher.add_handler(CommandHandler('tag_joke', functions.tag_joke))
 
 # button rating
 dispatcher.add_handler(CallbackQueryHandler(functions.button_rating))
