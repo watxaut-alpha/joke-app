@@ -1,5 +1,6 @@
 import argparse
 import logging
+import os
 
 import src.tasks.send as mail
 import src.tasks.validate as validate
@@ -15,7 +16,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # change dir to current main.py (when executed in cron)
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+
     if args.action == "send_joke_mail":
+
         mail.send_mail()
 
     elif args.action == "validate_jokes":
