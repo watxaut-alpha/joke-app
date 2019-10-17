@@ -115,7 +115,6 @@ def button_rating(bot: Bot, update: Update) -> None:
         # erase and get id "id: {id} - sdmcsdcma"
         tagged_joke_id = int(bot_message[4:].split(" - ")[0])
 
-        logger.info("Tagging joke {}, {}, {}".format(tagged_joke_id, user_id, user_response))
         request = api.tag_joke(tagged_joke_id, user_id, user_response)
         return None  # we don't want the keyboard to disappear
     else:

@@ -1,10 +1,10 @@
 import requests
-
+import datetime
 from fastapi import FastAPI
+from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from pydantic import BaseModel
 
 import src.db.jokes as jokes
 import src.db.users as users
@@ -94,7 +94,14 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
 
     if 0 <= rating <= 10:
         jokes.upsert_rating_joke(id_hash, joke_id, rating)
-        return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
+        t = datetime.datetime.now()
+        d = t.day
+        m = t.month
+        if id_hash == "cef6b0a6-ef4e-11e9-823c-0242ac150002" and d == 22 and m == 10:
+            # troll jaime
+            return templates.TemplateResponse("mail_trolear_jaime.html", {"request": request, "rating": rating})
+        else:
+            return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
     else:
         reason = "Your rating is invalid, like Clarita"
         return templates.TemplateResponse("nope.html", {"request": request, "reason": reason})
@@ -155,3 +162,4 @@ async def get_random_validate_joke():
             "joke_id": -1
         }
     return response
+
