@@ -19,15 +19,19 @@ def start(bot: Bot, update: Update) -> None:
 
     # add user to DB
     response = api.add_user_telegram(user_id, first_name)
+    if not response:
+        logger.error("Error while trying to add telegram user!")
 
     # send telegram message
-    bot_message = """Hey newcomer! This bot is able to send bad jokes (in spanish for the moment). You have 3 options:
+    bot_message = """
+    Hey newcomer! This bot is able to send bad jokes (in spanish for the moment).
+    You have 3 options:
     - /send_joke -> which will send a random joke from the DB
     - /rate_joke -> which sends a joke and let's you rate it
-    - /validate_joke -> sends a wannabe joke asking if it should be part of the 'curated list' of jokes
-    
-    Have fun!
-    """
+    - /validate_joke -> sends a wannabe joke.
+    Should it be in the 'curated list' of jokes, it's now your decision
+
+    Have fun!"""
     bot.send_message(chat_id=update.message.chat_id, text=bot_message)
 
 
@@ -85,32 +89,38 @@ def button_rating(bot: Bot, update: Update) -> None:
     bot_message = update.callback_query.message.text
     user_response = update.callback_query.data
 
-    # TODO: I dont like this approach, there should be another..
+    # TODO: I don't like this approach, there should be another..
     if "rate" in bot_message:
 
         new_text = "Thanks for rating! :)))"
 
         f_rating = float(user_response)
 
-        # erase and get id "id: {id} - sdmcsdcma"
+        # erase and get id "id: {id} - some-id"
         joke_id = int(bot_message[4:].split(" - ")[0])
 
         request = api.insert_rating_joke(user_id, joke_id, f_rating)
+        if not request:
+            logger.error("Something went wrong with 'insert_rating_joke'")
 
     elif "joke" in bot_message:
         new_text = "Thanks for the feedback! :DD"
 
         is_joke = "1" == user_response
 
-        # erase and get id "id: {id} - sdmcsdcma"
+        # erase and get id "id: {id} - some text"
         validated_joke_id = int(bot_message[4:].split(" - ")[0])
 
         request = api.update_joke_validation(validated_joke_id, user_id, is_joke)
+        if not request:
+            logger.error("Something went wrong with 'update_joke_validation'")
     elif "Tag" in bot_message:
-        # erase and get id "id: {id} - sdmcsdcma"
+        # erase and get id "id: {id} - some text"
         tagged_joke_id = int(bot_message[4:].split(" - ")[0])
 
         request = api.tag_joke(tagged_joke_id, user_id, user_response)
+        if not request:
+            logger.error("Something went wrong with 'tag_joke'")
         return None  # we don't want the keyboard to disappear
     else:
         new_text = "Thanks for the feedback brah! :DD"
@@ -131,9 +141,7 @@ def validate_joke(bot: Bot, update: Update) -> None:
 
         if id_joke == -1:  # API connects but no more jokes to validate
 
-            bot.send_message(
-                chat_id=update.message.chat_id, text="Whoops! No more jokes to validate"
-            )
+            bot.send_message(chat_id=update.message.chat_id, text="Whoops! No more jokes to validate")
             return None
 
         # else send message
@@ -141,12 +149,7 @@ def validate_joke(bot: Bot, update: Update) -> None:
         # ratings
         s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
 
-        keyboard = [
-            [
-                InlineKeyboardButton("Yep", callback_data=1),
-                InlineKeyboardButton("Nope", callback_data=0),
-            ]
-        ]
+        keyboard = [[InlineKeyboardButton("Yep", callback_data=1), InlineKeyboardButton("Nope", callback_data=0)]]
 
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -167,7 +170,8 @@ def tag_joke(bot: Bot, update: Update) -> None:
         id_joke = r_joke.json()["joke_id"]
         bot.send_message(chat_id=update.message.chat_id, text=str_joke)
 
-        if id_joke == -1:  # API connects but no more jokes to tag
+        # API connects but no more jokes to tag
+        if id_joke == -1:
             return
 
         # query random joke and return only one in a pandas DF
@@ -180,15 +184,10 @@ def tag_joke(bot: Bot, update: Update) -> None:
             l_group = [l_tags[i : i + n] for i in range(0, len(l_tags), n)]
             keyboard = []
             for l_line in l_group:
-                l_inline = [
-                    InlineKeyboardButton(tag["name"], callback_data=tag["id"])
-                    for tag in l_line
-                ]
+                l_inline = [InlineKeyboardButton(tag["name"], callback_data=tag["id"]) for tag in l_line]
                 keyboard.append(l_inline)
 
             reply_markup = InlineKeyboardMarkup(keyboard)
 
-            s_tag = "id: {id_joke} - Tag this! (as many tags as you want)".format(
-                id_joke=id_joke
-            )
+            s_tag = "id: {id_joke} - Tag this! (as many tags as you want)".format(id_joke=id_joke)
             update.message.reply_text(s_tag, reply_markup=reply_markup)

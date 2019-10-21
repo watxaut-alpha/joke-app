@@ -6,9 +6,7 @@ import src.functions as functions
 from src.secret import TOKEN
 
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 

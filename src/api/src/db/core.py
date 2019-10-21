@@ -5,12 +5,7 @@ from sqlalchemy.engine import Engine
 try:
     from src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 except ModuleNotFoundError:
-    from src.api.src.db.secret import (
-        HOST,
-        POSTGRES_USER,
-        POSTGRES_PASSWORD,
-        SCHEMA_NAME,
-    )
+    from src.api.src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
 
 def connect(host: str, user: str, password: str, schema_name: str) -> Engine:
@@ -62,8 +57,6 @@ def get_random_element(conn: Engine, table: str, where: str = "") -> pd.DataFram
     if where == "":
         sql = "SELECT * FROM {table} ORDER BY random() LIMIT 1;".format(table=table)
     else:
-        sql = "SELECT * FROM {table} where {where} ORDER BY random() LIMIT 1;".format(
-            table=table, where=where
-        )
+        sql = "SELECT * FROM {table} where {where} ORDER BY random() LIMIT 1;".format(table=table, where=where)
     df = execute_read(conn, sql)
     return df

@@ -55,9 +55,7 @@ def send_message(service, user_id, message):
       Sent Message.
     """
     try:
-        message = (
-            service.users().messages().send(userId=user_id, body=message).execute()
-        )
+        message = service.users().messages().send(userId=user_id, body=message).execute()
         logger.info("Message Id: %s" % message["id"])
         return True
     except errors.HttpError as error:

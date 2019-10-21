@@ -14,12 +14,7 @@ def populate_jokes_db(host: str, path_json: str) -> None:
     df_json.to_sql("jokes", con=engine, if_exists="append", index=False)
 
 
-# populate_jokes_db("vps721960.ovh.net", "/Users/joan/Documents/python_projects/joke_bot/newjokes2.json")
-
-
-def add_telegram_log(
-    conn: Engine, sender: str, message: str, id_user: int, item_1: str, var_txt_1: str
-) -> bool:
+def add_telegram_log(conn: Engine, sender: str, message: str, id_user: int, item_1: str, var_txt_1: str) -> bool:
     d_telegram = {
         "sender": sender,
         "message": message,

@@ -25,10 +25,8 @@ def send_mail(mail_user: str, mail_pwd: str, receiver: str, message: MIMEMultipa
         logger.info('Email sent to : "{}"!'.format(receiver))
 
         return True
-    except:
-        logger.error(
-            "Something went wrong sending the mail: '{}'".format(traceback.format_exc())
-        )
+    except smtplib.SMTPException:
+        logger.error("Something went wrong sending the mail: '{}'".format(traceback.format_exc()))
 
         return False
 

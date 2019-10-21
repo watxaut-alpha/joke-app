@@ -1,4 +1,5 @@
 import time
+import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -11,7 +12,7 @@ from src.api.src.db.secret import HOST
 FLASK_PORT = "8080"
 
 SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
-DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE 
+DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE
 EVERYDAY, BREAKING THE CODE, BREAKING YOUR COMPUTER OR STARTING WW3. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
 BE ACCUSED OF RACISM, BAD JOKES OR 'THIS JOKE GAVE ME AIDS'. TALK TO MY HAND"""
 
@@ -19,15 +20,10 @@ RECEIVERS = ["watxaut.alpha@gmail.com"]
 
 SUBJECT = "CHISTE MALO DEL DÍA - NINI EDITION: RELOADED"
 
+logger = logging.getLogger("jokeBot")
 
-def create_message(
-    mail_user: str,
-    d_receiver: dict,
-    d_joke: dict,
-    subject: str,
-    signature: str,
-    disclaimer: str,
-):
+
+def create_message(mail_user: str, d_receiver: dict, d_joke: dict, subject: str, signature: str, disclaimer: str):
     email_text = """From: {}
 To: {}
 Subject: {}
@@ -70,23 +66,16 @@ Subject: {}
     return message
 
 
-def send_mail(
-    mail_user: str,
-    mail_pwd: str,
-    d_receivers: dict,
-    d_joke: dict,
-    subject: str,
-    provider: str = "smtp",
-):
+def send_mail(mail_user: str, mail_pwd: str, d_receivers: dict, d_joke: dict, subject: str, provider: str = "smtp"):
 
     for d_receiver in d_receivers.values():
-        message = create_message(
-            mail_user, d_receiver, d_joke, subject, SIGNATURE, DISCLAIMER
-        )
+        message = create_message(mail_user, d_receiver, d_joke, subject, SIGNATURE, DISCLAIMER)
 
         if provider == "smtp":
 
             is_sent = smtp.send_mail(mail_user, mail_pwd, d_receiver["email"], message)
+            if not is_sent:
+                logger.error("Something wrong with sending mail, mail not sent")
             time.sleep(1)
 
         else:

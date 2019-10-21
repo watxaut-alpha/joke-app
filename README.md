@@ -1,4 +1,6 @@
 # Joke-app
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+----
 This project is the continuation of my other repository 
 [joke-automation-mail](https://github.com/watxaut-alpha/joke-mail-automation "jokes in mails yay"). 
 Both projects are intended to send jokes to the user (in this case a joke) but this one is 

@@ -15,9 +15,7 @@ def get_random_joke() -> pd.DataFrame:
 
 
 def get_random_joke_not_sent_by_mail_already(conn: Engine) -> pd.DataFrame:
-    return db.get_random_element(
-        conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)"
-    )
+    return db.get_random_element(conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)")
 
 
 def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None:
@@ -35,16 +33,13 @@ def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None
 
 def upsert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None:
     sql = """
-INSERT INTO ratings (user_id, joke_id, rating, created_at) 
+INSERT INTO ratings (user_id, joke_id, rating, created_at)
 VALUES ('{user_id}', {joke_id}, {rating}, '{created_at}')
-ON CONFLICT (user_id, joke_id) 
-DO UPDATE 
+ON CONFLICT (user_id, joke_id)
+DO UPDATE
 SET rating = {rating};
     """.format(
-        user_id=user_id,
-        joke_id=joke_id,
-        rating=rating,
-        created_at=datetime.datetime.now().isoformat(),
+        user_id=user_id, joke_id=joke_id, rating=rating, created_at=datetime.datetime.now().isoformat()
     )
     conn = db.get_jokes_app_connection()
     db.execute_update(conn, sql)
@@ -52,15 +47,12 @@ SET rating = {rating};
 
 def upsert_joke_tag(user_id: [str, int], joke_id: int, tag_id: int):
     sql = """
-INSERT INTO joke_tags (user_id, joke_id, tag_id, created_at) 
+INSERT INTO joke_tags (user_id, joke_id, tag_id, created_at)
 VALUES ('{user_id}', {joke_id}, {tag_id}, '{created_at}')
-ON CONFLICT (user_id, joke_id, tag_id) 
+ON CONFLICT (user_id, joke_id, tag_id)
 DO NOTHING;
         """.format(
-        user_id=user_id,
-        joke_id=joke_id,
-        tag_id=tag_id,
-        created_at=datetime.datetime.now().isoformat(),
+        user_id=user_id, joke_id=joke_id, tag_id=tag_id, created_at=datetime.datetime.now().isoformat()
     )
     conn = db.get_jokes_app_connection()
     a = db.execute_update(conn, sql)
@@ -94,8 +86,4 @@ def get_tags():
 
 def get_untagged_joke():
     conn = db.get_jokes_app_connection()
-    return db.get_random_element(
-        conn,
-        "jokes",
-        where="id not in (select joke_id from joke_tags group by joke_id)",
-    )
+    return db.get_random_element(conn, "jokes", where="id not in (select joke_id from joke_tags group by joke_id)")

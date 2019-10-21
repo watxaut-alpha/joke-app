@@ -74,7 +74,7 @@ async def add_user(user: TelegramUser):
 
 
 @app.post("/user/mail/add", status_code=201)
-async def add_user(user: MailUser):
+async def add_mail_user(user: MailUser):
     users.add_user_mail(user.email)
     return user
 
@@ -96,18 +96,12 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
         m = t.month
         if id_hash == "cef6b0a6-ef4e-11e9-823c-0242ac150002" and d == 22 and m == 10:
             # troll jaime
-            return templates.TemplateResponse(
-                "mail_trolear_jaime.html", {"request": request, "rating": rating}
-            )
+            return templates.TemplateResponse("mail_trolear_jaime.html", {"request": request, "rating": rating})
         else:
-            return templates.TemplateResponse(
-                "thanks_rating.html", {"request": request, "rating": rating}
-            )
+            return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
     else:
         reason = "Your rating is invalid, like Clarita"
-        return templates.TemplateResponse(
-            "nope.html", {"request": request, "reason": reason}
-        )
+        return templates.TemplateResponse("nope.html", {"request": request, "reason": reason})
 
 
 # define the same method but with put

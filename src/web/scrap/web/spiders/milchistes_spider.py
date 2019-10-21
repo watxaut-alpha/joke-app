@@ -25,18 +25,11 @@ class MilChistesSpider(scrapy.Spider):
         if l_jokes:
             # get all the jokes in string
             for joke in l_jokes:
-                l_strings = [
-                    x.get() for x in joke.css("p[itemprop='articleBody']::text")
-                ]
+                l_strings = [x.get() for x in joke.css("p[itemprop='articleBody']::text")]
                 s_joke = "".join(l_strings)
                 url_id = joke.css("a[class='compartir']::attr('href')")[0].get()
 
-                d_joke = {
-                    "hash_id": url_id,
-                    "user_str_id": "1000Chistes",
-                    "user_name": "1000Chistes",
-                    "joke": s_joke,
-                }
+                d_joke = {"hash_id": url_id, "user_str_id": "1000Chistes", "user_name": "1000Chistes", "joke": s_joke}
 
                 yield d_joke
 
@@ -44,8 +37,6 @@ class MilChistesSpider(scrapy.Spider):
 
             # follow onto the next page
             new_page_number = int(response.url.split(r"/")[-1]) + 1
-            new_url = "{url}/{page_num}".format(
-                url=r"/".join(response.url.split(r"/")[:-1]), page_num=new_page_number
-            )
+            new_url = "{url}/{page_num}".format(url=r"/".join(response.url.split(r"/")[:-1]), page_num=new_page_number)
             print(new_url)
             yield response.follow(new_url, self.parse)
