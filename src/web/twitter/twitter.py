@@ -6,11 +6,20 @@ from tweepy.models import Status
 
 import src.api.src.db.core as db
 import src.api.src.db.twitter as twitter_db
-from src.scrappers.twitter.secret import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
-from src.scrappers.twitter.twitter_config import JOKES_FROM_USERS, MAX_TWEETS_FOR_USER, TWITTER_LANG
+from src.scrappers.twitter.secret import (
+    CONSUMER_KEY,
+    CONSUMER_SECRET,
+    ACCESS_TOKEN,
+    ACCESS_SECRET,
+)
+from src.scrappers.twitter.twitter_config import (
+    JOKES_FROM_USERS,
+    MAX_TWEETS_FOR_USER,
+    TWITTER_LANG,
+)
 
 
-logger = logging.getLogger('jokeBot')
+logger = logging.getLogger("jokeBot")
 
 
 def init_twitter_handler() -> tweepy.API:
@@ -32,7 +41,9 @@ def init_twitter_handler() -> tweepy.API:
     return api
 
 
-def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> List[dict, ...]:
+def get_tweets_from_user(
+    api: tweepy.API, user_name: str, max_tweets: int
+) -> List[dict, ...]:
 
     logger.debug("Getting jokes from twitter user: '{}'".format(user_name))
 
@@ -40,17 +51,21 @@ def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> Li
     twitter_user = api.get_user(user_name)
 
     # get list of tweets from user timeline (latest tweets)
-    l_user_timeline = twitter_user.timeline(trim_user=True, exclude_replies=True, include_rts=False, count=max_tweets)
+    l_user_timeline = twitter_user.timeline(
+        trim_user=True, exclude_replies=True, include_rts=False, count=max_tweets
+    )
 
     # get all tweets from a user that does not contain https and save it into a list of dicts
     l_tweets = []
     for tweet in l_user_timeline:
-        if "https" not in tweet.text:  # https not in text for only text jokes, not images
+        if (
+            "https" not in tweet.text
+        ):  # https not in text for only text jokes, not images
             d_tweet = {
                 "hash_id": tweet.id_str,
                 "user_name": user_name,
                 "user_str_id": tweet.author.id_str,
-                "joke": tweet.text
+                "joke": tweet.text,
             }
 
             l_tweets.append(d_tweet)
@@ -85,11 +100,12 @@ def add_jokes_to_twitter_table() -> None:
     # get a list of jokes from selected and curated twitter users
     l_jokes = []
     for twitter_user in JOKES_FROM_USERS:
-        l_new_jokes = get_tweets_from_user(twitter_api, twitter_user, MAX_TWEETS_FOR_USER)
+        l_new_jokes = get_tweets_from_user(
+            twitter_api, twitter_user, MAX_TWEETS_FOR_USER
+        )
         l_jokes.extend(l_new_jokes)
 
     # input new jokes in the DB
     for d_new_joke in l_jokes:
         if not twitter_db.has_twitter_db_joke(conn, d_new_joke["hash_id"]):
             twitter_db.add_joke_to_twitter_table(conn, d_new_joke)
-

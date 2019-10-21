@@ -5,16 +5,20 @@ from sqlalchemy.engine import Engine
 try:
     from src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 except ModuleNotFoundError:
-    from src.api.src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
+    from src.api.src.db.secret import (
+        HOST,
+        POSTGRES_USER,
+        POSTGRES_PASSWORD,
+        SCHEMA_NAME,
+    )
 
 
 def connect(host: str, user: str, password: str, schema_name: str) -> Engine:
-    engine = create_engine("postgresql://{user}:{pwd}@{host}:5432/{schema_name}".format(
-        user=user,
-        pwd=password,
-        host=host,
-        schema_name=schema_name),
-        encoding="utf8"
+    engine = create_engine(
+        "postgresql://{user}:{pwd}@{host}:5432/{schema_name}".format(
+            user=user, pwd=password, host=host, schema_name=schema_name
+        ),
+        encoding="utf8",
     )
 
     return engine
@@ -41,13 +45,13 @@ def add_record(conn: Engine, model: str, d_values: dict) -> bool:
     df = pd.DataFrame(d_values)
 
     # store data in the Connection DB
-    df.to_sql(model, con=conn, if_exists='append', index=False)
+    df.to_sql(model, con=conn, if_exists="append", index=False)
 
     return True
 
 
 def add_records(conn: Engine, model: str, df: pd.DataFrame):
-    df.to_sql(model, con=conn, if_exists='append', index=False)
+    df.to_sql(model, con=conn, if_exists="append", index=False)
 
     return True
 
@@ -58,6 +62,8 @@ def get_random_element(conn: Engine, table: str, where: str = "") -> pd.DataFram
     if where == "":
         sql = "SELECT * FROM {table} ORDER BY random() LIMIT 1;".format(table=table)
     else:
-        sql = "SELECT * FROM {table} where {where} ORDER BY random() LIMIT 1;".format(table=table, where=where)
+        sql = "SELECT * FROM {table} where {where} ORDER BY random() LIMIT 1;".format(
+            table=table, where=where
+        )
     df = execute_read(conn, sql)
     return df

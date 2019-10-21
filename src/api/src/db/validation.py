@@ -10,8 +10,9 @@ except ModuleNotFoundError:
 
 
 def has_twitter_db_joke(conn: Engine, hash_id: str) -> bool:
-    df = db.execute_read(conn, "select hash_id from validate_jokes where hash_id = '{}'".format(
-        hash_id))
+    df = db.execute_read(
+        conn, "select hash_id from validate_jokes where hash_id = '{}'".format(hash_id)
+    )
     return not df.empty
 
 
@@ -46,7 +47,7 @@ where
         is_joke=is_joke,
         validated_by_user=user_id,
         updated_at=datetime.datetime.now().isoformat(),
-        joke_id=joke_id
+        joke_id=joke_id,
     )
 
     db.execute_update(conn, sql)

@@ -11,7 +11,7 @@ TIMEOUT_MSG = "Oops, something went wrong with the API. Try again later"
 
 
 def start(bot: Bot, update: Update) -> None:
-    logger.info('Command start issued')
+    logger.info("Command start issued")
 
     # get user info coming from telegram message
     user_id = str(update.message.chat.id)
@@ -28,15 +28,12 @@ def start(bot: Bot, update: Update) -> None:
     
     Have fun!
     """
-    bot.send_message(
-        chat_id=update.message.chat_id,
-        text=bot_message
-    )
+    bot.send_message(chat_id=update.message.chat_id, text=bot_message)
 
 
 def send_joke(bot: Bot, update: Update) -> None:
 
-    logger.info('Command send_joke issued')
+    logger.info("Command send_joke issued")
 
     # query random joke from API
     response = api.get_random_joke()
@@ -45,14 +42,11 @@ def send_joke(bot: Bot, update: Update) -> None:
     else:
         str_joke = "Oops, something went wrong. Try again later"
 
-    bot.send_message(
-        chat_id=update.message.chat_id,
-        text=str_joke
-    )
+    bot.send_message(chat_id=update.message.chat_id, text=str_joke)
 
 
 def rate_joke(bot: Bot, update: Update) -> None:
-    logger.info('Command rate_joke issued')
+    logger.info("Command rate_joke issued")
 
     # query random joke from API
     response = api.get_random_joke()
@@ -63,19 +57,20 @@ def rate_joke(bot: Bot, update: Update) -> None:
         str_joke = TIMEOUT_MSG
         id_joke = -1
 
-    bot.send_message(
-        chat_id=update.message.chat_id,
-        text=str_joke
-    )
+    bot.send_message(chat_id=update.message.chat_id, text=str_joke)
 
     # ratings
     s_ratings = "id: {id_joke} - How would you rate this joke?".format(id_joke=id_joke)
 
-    keyboard = [[InlineKeyboardButton("0", callback_data=0),
-                 InlineKeyboardButton("2.5", callback_data=2.5),
-                 InlineKeyboardButton("5", callback_data=5),
-                 InlineKeyboardButton("7.5", callback_data=7.5),
-                 InlineKeyboardButton("10", callback_data=10)]]
+    keyboard = [
+        [
+            InlineKeyboardButton("0", callback_data=0),
+            InlineKeyboardButton("2.5", callback_data=2.5),
+            InlineKeyboardButton("5", callback_data=5),
+            InlineKeyboardButton("7.5", callback_data=7.5),
+            InlineKeyboardButton("10", callback_data=10),
+        ]
+    ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -124,7 +119,7 @@ def button_rating(bot: Bot, update: Update) -> None:
 
 
 def validate_joke(bot: Bot, update: Update) -> None:
-    logger.info('Command validate_joke issued')
+    logger.info("Command validate_joke issued")
 
     # query random joke and return only one in a pandas DF
     response = api.get_random_validation_joke()
@@ -137,21 +132,21 @@ def validate_joke(bot: Bot, update: Update) -> None:
         if id_joke == -1:  # API connects but no more jokes to validate
 
             bot.send_message(
-                chat_id=update.message.chat_id,
-                text="Whoops! No more jokes to validate"
+                chat_id=update.message.chat_id, text="Whoops! No more jokes to validate"
             )
             return None
 
         # else send message
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=str_joke
-        )
+        bot.send_message(chat_id=update.message.chat_id, text=str_joke)
         # ratings
         s_ratings = "id: {id_joke} - Is this even a joke?".format(id_joke=id_joke)
 
-        keyboard = [[InlineKeyboardButton("Yep", callback_data=1),
-                     InlineKeyboardButton("Nope", callback_data=0)]]
+        keyboard = [
+            [
+                InlineKeyboardButton("Yep", callback_data=1),
+                InlineKeyboardButton("Nope", callback_data=0),
+            ]
+        ]
 
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -159,24 +154,18 @@ def validate_joke(bot: Bot, update: Update) -> None:
 
     else:  # the table of twitter jokes is already all validated
 
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=TIMEOUT_MSG
-        )
+        bot.send_message(chat_id=update.message.chat_id, text=TIMEOUT_MSG)
 
 
 def tag_joke(bot: Bot, update: Update) -> None:
-    logger.info('Command tag_joke issued')
+    logger.info("Command tag_joke issued")
 
     r_joke = api.get_untagged_joke()
     if r_joke:
         # unpack joke info and send it to telegram
         str_joke = r_joke.json()["joke"]
         id_joke = r_joke.json()["joke_id"]
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=str_joke
-        )
+        bot.send_message(chat_id=update.message.chat_id, text=str_joke)
 
         if id_joke == -1:  # API connects but no more jokes to tag
             return
@@ -188,13 +177,18 @@ def tag_joke(bot: Bot, update: Update) -> None:
             n = 4
             d_tags = r_tags.json()["tags"]
             l_tags = list(d_tags.values())
-            l_group = [l_tags[i:i + n] for i in range(0, len(l_tags), n)]
+            l_group = [l_tags[i : i + n] for i in range(0, len(l_tags), n)]
             keyboard = []
             for l_line in l_group:
-                l_inline = [InlineKeyboardButton(tag["name"], callback_data=tag["id"]) for tag in l_line]
+                l_inline = [
+                    InlineKeyboardButton(tag["name"], callback_data=tag["id"])
+                    for tag in l_line
+                ]
                 keyboard.append(l_inline)
 
             reply_markup = InlineKeyboardMarkup(keyboard)
 
-            s_tag = "id: {id_joke} - Tag this! (as many tags as you want)".format(id_joke=id_joke)
+            s_tag = "id: {id_joke} - Tag this! (as many tags as you want)".format(
+                id_joke=id_joke
+            )
             update.message.reply_text(s_tag, reply_markup=reply_markup)

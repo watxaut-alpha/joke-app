@@ -8,7 +8,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
 logger = logging.getLogger("jokeBot")
 
@@ -20,10 +20,10 @@ def init_service():
     # time.
 
     pickle_path = "src/mail/google/token.pickle"
-    credentials_path = 'src/mail/google/credentials.json'
+    credentials_path = "src/mail/google/credentials.json"
 
     if os.path.exists(pickle_path):
-        with open(pickle_path, 'rb') as token:
+        with open(pickle_path, "rb") as token:
             credentials = pickle.load(token)
 
     # If there are no (valid) credentials available, let the user log in.
@@ -34,10 +34,10 @@ def init_service():
             flow = InstalledAppFlow.from_client_secrets_file(credentials_path, SCOPES)
             credentials = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open(pickle_path, 'wb') as token:
+        with open(pickle_path, "wb") as token:
             pickle.dump(credentials, token)
 
-    service = build('gmail', 'v1', credentials=credentials)
+    service = build("gmail", "v1", credentials=credentials)
 
     return service
 
@@ -55,10 +55,11 @@ def send_message(service, user_id, message):
       Sent Message.
     """
     try:
-        message = (service.users().messages().send(userId=user_id, body=message)
-                   .execute())
-        logger.info('Message Id: %s' % message['id'])
+        message = (
+            service.users().messages().send(userId=user_id, body=message).execute()
+        )
+        logger.info("Message Id: %s" % message["id"])
         return True
     except errors.HttpError as error:
-        logger.error('An error occurred: %s' % error)
+        logger.error("An error occurred: %s" % error)
         return False

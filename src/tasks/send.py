@@ -24,7 +24,9 @@ def send_mail():
     d_joke = df_joke.to_dict(orient="index")[0]
     d_joke["joke"] = d_joke["joke"].replace("\n", "<br>")  # replace \n with html
 
-    is_sent = mail.send_mail(USER, PASSWORD, d_receivers, d_joke, mail.SUBJECT, provider='smtp')
+    is_sent = mail.send_mail(
+        USER, PASSWORD, d_receivers, d_joke, mail.SUBJECT, provider="smtp"
+    )
 
     if is_sent:
         jokes.put_sent_joke_db(conn, d_joke["id"])

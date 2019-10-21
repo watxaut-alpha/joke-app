@@ -15,17 +15,26 @@ DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT
 EVERYDAY, BREAKING THE CODE, BREAKING YOUR COMPUTER OR STARTING WW3. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
 BE ACCUSED OF RACISM, BAD JOKES OR 'THIS JOKE GAVE ME AIDS'. TALK TO MY HAND"""
 
-RECEIVERS = ["watxaut.alpha@gmail.com", ]
+RECEIVERS = ["watxaut.alpha@gmail.com"]
 
 SUBJECT = "CHISTE MALO DEL DÍA - NINI EDITION: RELOADED"
 
 
-def create_message(mail_user: str, d_receiver: dict, d_joke: dict, subject: str, signature: str, disclaimer: str):
+def create_message(
+    mail_user: str,
+    d_receiver: dict,
+    d_joke: dict,
+    subject: str,
+    signature: str,
+    disclaimer: str,
+):
     email_text = """From: {}
 To: {}
 Subject: {}
 {}
-{}""".format(mail_user, d_receiver["email"], subject, d_joke["joke"], disclaimer)
+{}""".format(
+        mail_user, d_receiver["email"], subject, d_joke["joke"], disclaimer
+    )
 
     # load mail template for ratings
     with open("src/tasks/mail/templates/mail_joke.html", "r") as f_rating:
@@ -40,7 +49,7 @@ Subject: {}
         joke_id=d_joke["id"],
         id_hash=d_receiver["id_hash"],
         signature=signature,
-        disclaimer=disclaimer
+        disclaimer=disclaimer,
     )
     print(email_html)
 
@@ -61,10 +70,19 @@ Subject: {}
     return message
 
 
-def send_mail(mail_user: str, mail_pwd: str, d_receivers: dict, d_joke: dict, subject: str, provider: str = "smtp"):
+def send_mail(
+    mail_user: str,
+    mail_pwd: str,
+    d_receivers: dict,
+    d_joke: dict,
+    subject: str,
+    provider: str = "smtp",
+):
 
     for d_receiver in d_receivers.values():
-        message = create_message(mail_user, d_receiver, d_joke, subject, SIGNATURE, DISCLAIMER)
+        message = create_message(
+            mail_user, d_receiver, d_joke, subject, SIGNATURE, DISCLAIMER
+        )
 
         if provider == "smtp":
 

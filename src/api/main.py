@@ -82,10 +82,7 @@ async def add_user(user: MailUser):
 @app.get("/jokes/random")
 async def send_random_joke():
     df = jokes.get_random_joke()
-    response = {
-        "joke_id": int(df["id"][0]),
-        "joke": df["joke"][0]
-    }
+    response = {"joke_id": int(df["id"][0]), "joke": df["joke"][0]}
     return response
 
 
@@ -99,12 +96,18 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
         m = t.month
         if id_hash == "cef6b0a6-ef4e-11e9-823c-0242ac150002" and d == 22 and m == 10:
             # troll jaime
-            return templates.TemplateResponse("mail_trolear_jaime.html", {"request": request, "rating": rating})
+            return templates.TemplateResponse(
+                "mail_trolear_jaime.html", {"request": request, "rating": rating}
+            )
         else:
-            return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
+            return templates.TemplateResponse(
+                "thanks_rating.html", {"request": request, "rating": rating}
+            )
     else:
         reason = "Your rating is invalid, like Clarita"
-        return templates.TemplateResponse("nope.html", {"request": request, "reason": reason})
+        return templates.TemplateResponse(
+            "nope.html", {"request": request, "reason": reason}
+        )
 
 
 # define the same method but with put
@@ -136,15 +139,9 @@ async def tag_joke(user_tag: UserTag):
 async def get_untagged_joke():
     df = jokes.get_untagged_joke()
     if not df.empty:
-        response = {
-            "joke": df["joke"][0],
-            "joke_id": int(df["id"][0])
-        }
+        response = {"joke": df["joke"][0], "joke_id": int(df["id"][0])}
     else:
-        response = {
-            "joke": "No more jokes to tag",
-            "joke_id": -1
-        }
+        response = {"joke": "No more jokes to tag", "joke_id": -1}
     return response
 
 
@@ -152,14 +149,7 @@ async def get_untagged_joke():
 async def get_random_validate_joke():
     df = validation.get_random_twitter_joke()
     if not df.empty:
-        response = {
-            "joke": df["joke"][0],
-            "joke_id": int(df["id"][0])
-        }
+        response = {"joke": df["joke"][0], "joke_id": int(df["id"][0])}
     else:
-        response = {
-            "joke": "No more jokes to validate",
-            "joke_id": -1
-        }
+        response = {"joke": "No more jokes to validate", "joke_id": -1}
     return response
-
