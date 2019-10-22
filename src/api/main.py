@@ -96,7 +96,7 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
         m = t.month
         if id_hash == "cef6b0a6-ef4e-11e9-823c-0242ac150002" and d == 22 and m == 10:
             # troll jaime
-            return templates.TemplateResponse("mail_trolear_jaime.html", {"request": request, "rating": rating})
+            return templates.TemplateResponse("troll_jaime.html", {"request": request, "rating": rating})
         else:
             return templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
     else:
