@@ -94,7 +94,7 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
         t = datetime.datetime.now()
         d = t.day
         m = t.month
-        if id_hash == "cef6b0a6-ef4e-11e9-823c-0242ac150002" and d == 22 and m == 10:
+        if id_hash == "cef6b0a6-ef4e-11e9-823c-0242ac150002" and d == 23 and m == 10:
             # troll jaime
             return templates.TemplateResponse("troll_jaime.html", {"request": request, "rating": rating})
         else:
