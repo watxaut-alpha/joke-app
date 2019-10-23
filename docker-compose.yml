@@ -9,8 +9,6 @@ services:
       - joke-api
   joke-api:
     image: joke-api:0.0.1
-    volumes:
-      - /etc/letsencrypt/live/watxaut.com:/etc
     build:
       context: ./src/api
       dockerfile: Dockerfile
