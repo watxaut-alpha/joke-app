@@ -12,6 +12,8 @@ def send_mail(mail_user: str, mail_pwd: str, receiver: str, message: MIMEMultipa
             server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         elif mail_user.endswith("yahoo.com"):
             server = smtplib.SMTP_SSL("smtp.mail.yahoo.com", 465)
+        elif mail_user.endswith("mg.watxaut.com"):
+            server = smtplib.SMTP_SSL("smtp.eu.mailgun.org", 465)
         else:
             return False
 

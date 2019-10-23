@@ -5,7 +5,7 @@ import src.tasks.mail.smtp as smtp
 import src.api.src.db.jokes as jokes
 import src.api.src.db.core as db
 import src.api.src.db.users as users
-from src.tasks.mail.secret import YAHOO_USER as USER, YAHOO_PWD as PASSWORD
+from src.tasks.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
 
 
 def send_mail():
