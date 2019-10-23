@@ -9,7 +9,7 @@ import src.tasks.mail.smtp as smtp
 from src.api.src.db.secret import HOST
 
 
-FLASK_PORT = "8080"
+FLASK_PORT = "80"
 
 SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
 DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE
