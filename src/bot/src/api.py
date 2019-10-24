@@ -33,7 +33,7 @@ def get_random_joke() -> requests.Response:
 @connect
 def insert_rating_joke(user_id: str, joke_id: int, f_rating: float) -> requests.Response:
     url = "{host}:{port}/jokes/rating".format(host=HOST, port=PORT)
-    data = {"user_id": user_id, "joke_id": joke_id, "rating": f_rating}
+    data = {"user_id": user_id, "joke_id": joke_id, "rating": f_rating, "source": "telegram"}
     return requests.put(url, json=data, timeout=TIMEOUT)
 
 

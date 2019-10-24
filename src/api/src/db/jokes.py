@@ -18,7 +18,7 @@ def get_random_joke_not_sent_by_mail_already(conn: Engine) -> pd.DataFrame:
     return db.get_random_element(conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)")
 
 
-def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None:
+def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float, source: str) -> None:
     conn = db.get_jokes_app_connection()
 
     model = "ratings"
@@ -27,19 +27,20 @@ def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None
         "joke_id": joke_id,
         "rating": rating,
         "created_at": datetime.datetime.now().isoformat(),
+        "source": source,
     }
     db.add_record(conn, model, d_values)
 
 
-def upsert_rating_joke(user_id: [str, int], joke_id: int, rating: float) -> None:
+def upsert_rating_joke(user_id: [str, int], joke_id: int, rating: float, source: str) -> None:
     sql = """
-INSERT INTO ratings (user_id, joke_id, rating, created_at)
-VALUES ('{user_id}', {joke_id}, {rating}, '{created_at}')
+INSERT INTO ratings (user_id, joke_id, rating, created_at, source)
+VALUES ('{user_id}', {joke_id}, {rating}, '{created_at}', '{source}')
 ON CONFLICT (user_id, joke_id)
 DO UPDATE
 SET rating = {rating};
     """.format(
-        user_id=user_id, joke_id=joke_id, rating=rating, created_at=datetime.datetime.now().isoformat()
+        user_id=user_id, joke_id=joke_id, rating=rating, created_at=datetime.datetime.now().isoformat(), source=source
     )
     conn = db.get_jokes_app_connection()
     db.execute_update(conn, sql)

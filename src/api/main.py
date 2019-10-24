@@ -31,6 +31,7 @@ class UserRating(BaseModel):
     user_id: str
     joke_id: int
     rating: float
+    source: str
 
 
 class UserValidation(BaseModel):
@@ -90,7 +91,7 @@ async def send_random_joke():
 async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: float):
 
     if 0 <= rating <= 10:
-        jokes.upsert_rating_joke(id_hash, joke_id, rating)
+        jokes.upsert_rating_joke(id_hash, joke_id, rating, "mail")
         t = datetime.datetime.now()
         d = t.day
         m = t.month
