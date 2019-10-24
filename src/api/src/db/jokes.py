@@ -56,8 +56,7 @@ DO NOTHING;
         user_id=user_id, joke_id=joke_id, tag_id=tag_id, created_at=datetime.datetime.now().isoformat()
     )
     conn = db.get_jokes_app_connection()
-    a = db.execute_update(conn, sql)
-    print(a, 2)
+    db.execute_update(conn, sql)
 
 
 def put_joke_db(conn: Engine, joke: str, author: str) -> None:

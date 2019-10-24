@@ -11,12 +11,10 @@ from src.api.src.db.secret import HOST
 
 FLASK_PORT = "80"
 
-SIGNATURE = "Fdo.: un pogramador que come zanahorias pero esta vez desde su puta casa y mucho mejor."
+SIGNATURE = "Un pogramador que come zanahorias"
 DISCLAIMER = """DISCLAIMER: THIS JOKE OR PROSA POETICA IS PROVIDED AS IS WITHOUT WARRANTY OF DELIVERING THE JOKE
 EVERYDAY, BREAKING THE CODE, BREAKING YOUR COMPUTER OR STARTING WW3. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
 BE ACCUSED OF RACISM, BAD JOKES OR 'THIS JOKE GAVE ME AIDS'. TALK TO MY HAND"""
-
-RECEIVERS = ["watxaut.alpha@gmail.com"]
 
 SUBJECT = "CHISTE MALO DEL DÍA - NINI EDITION: RELOADED"
 
@@ -47,7 +45,6 @@ Subject: {}
         signature=signature,
         disclaimer=disclaimer,
     )
-    print(email_html)
 
     # fancy email with html
     message = MIMEMultipart("alternative")
