@@ -10,7 +10,7 @@ import src.db.jokes as jokes
 import src.db.users as users
 import src.db.validation as validation
 
-# uvicorn main:app --host 0.0.0.0 --port 8080
+# uvicorn main:app --host 0.0.0.0 --port 80
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -63,7 +63,7 @@ async def not_found(request, exc):
     return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
 
 
-@app.get("/legal/")
+@app.get("/legal")
 async def legal(request: Request):
     return templates.TemplateResponse("legal.html", {"request": request})
 
