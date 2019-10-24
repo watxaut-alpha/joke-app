@@ -60,7 +60,7 @@ async def main(request: Request):
 
 @app.exception_handler(404)
 async def not_found(request, exc):
-    return templates.TemplateResponse("404.html", {"request": request})
+    return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
 
 
 @app.get("/legal/")
