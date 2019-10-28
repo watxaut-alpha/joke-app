@@ -47,7 +47,27 @@ def add_user_mail(email: str) -> bool:
     return True
 
 
+def add_admin_user(conn: Engine, username: str, email: str, hashed_password: str, disabled: bool, scopes: str) -> bool:
+    # conn = db.get_jokes_app_connection()
+
+    d_user_admin = {
+        "username": username,
+        "email": email,
+        "hashed_password": hashed_password,
+        "disabled": disabled,
+        "scopes": scopes,
+    }
+    db.add_record(conn, "users_admin", d_user_admin)
+
+    return True
+
+
+def get_admin_users():
+    conn = db.get_jokes_app_connection()
+    return db.execute_read(conn, "select * from users_admin")
+
+
 # from src.db.secret import HOST_OVH, POSTGRES_USER, POSTGRES_PASSWORD_OVH, SCHEMA_NAME
 # conn = db.connect(HOST_OVH, POSTGRES_USER, POSTGRES_PASSWORD_OVH, SCHEMA_NAME)
 #
-# add_user_mail(conn, "watxaut.alpha@yahoo.com")
+# add_admin_user(conn, username, email, hashed_password, disabled, scopes)
