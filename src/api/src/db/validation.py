@@ -37,7 +37,7 @@ update
 set
     is_joke = {is_joke},
     validated_by_user_id = '{validated_by_user}',
-    updated_at='{updated_at}
+    updated_at='{updated_at}'
 where
     id = {joke_id}
 """.format(
