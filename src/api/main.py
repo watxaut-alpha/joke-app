@@ -225,6 +225,12 @@ async def send_random_joke():
     return response
 
 
+@app.get("/users")
+async def get_all_users(current_user: auth.User = Depends(get_current_user)):
+    d_users = users.get_users_mail().to_dict(orient="index")
+    return d_users
+
+
 @app.get("/jokes/rating/{joke_id}/{id_hash}/{rating}")
 async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: float):
     """

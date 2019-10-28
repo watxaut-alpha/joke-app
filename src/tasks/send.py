@@ -13,7 +13,7 @@ def send_mail():
 
     conn = db.get_jokes_app_connection()
 
-    d_receivers = users.get_users_mail(conn).to_dict(orient="index")
+    d_receivers = users.get_users_mail().to_dict(orient="index")
 
     # get a joke that is not sent previously
     df_joke = jokes.get_random_joke_not_sent_by_mail_already(conn)

@@ -25,7 +25,8 @@ def add_user_telegram(user_id: str, first_name: str) -> bool:
         return True
 
 
-def get_users_mail(conn: Engine):
+def get_users_mail():
+    conn = db.get_jokes_app_connection()
     return db.execute_read(conn, "select * from users_mail")
 
 
