@@ -1,5 +1,5 @@
 import datetime
-
+import sqlalchemy.exc
 import pandas as pd
 from sqlalchemy.engine import Engine
 
@@ -18,32 +18,70 @@ def get_random_joke_not_sent_by_mail_already(conn: Engine) -> pd.DataFrame:
     return db.get_random_element(conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)")
 
 
-def insert_rating_joke(user_id: [str, int], joke_id: int, rating: float, source: str) -> None:
+def check_user_exists(user_id: str):
+    sql_telegram = "select user_id from users where user_id='{user_id}'".format(user_id=user_id)
+    sql_mail = "select id_hash from users_mail where id_hash='{user_id}'".format(user_id=user_id)
+
     conn = db.get_jokes_app_connection()
 
-    model = "ratings"
-    d_values = {
-        "user_id": user_id,
-        "joke_id": joke_id,
-        "rating": rating,
-        "created_at": datetime.datetime.now().isoformat(),
-        "source": source,
-    }
-    db.add_record(conn, model, d_values)
+    has_telegram_user = not db.execute_read(conn, sql_telegram).empty
+    has_mail_user = not db.execute_read(conn, sql_mail).empty
+
+    if has_mail_user or has_telegram_user:
+        return True  # at least one of the users exists
+    else:
+        return False  # the id does not correspond to telegram or mail users -> fake ID
 
 
-def upsert_rating_joke(user_id: [str, int], joke_id: int, rating: float, source: str) -> None:
-    sql = """
-INSERT INTO ratings (user_id, joke_id, rating, created_at, source)
-VALUES ('{user_id}', {joke_id}, {rating}, '{created_at}', '{source}')
-ON CONFLICT (user_id, joke_id)
-DO UPDATE
-SET rating = {rating};
-    """.format(
-        user_id=user_id, joke_id=joke_id, rating=rating, created_at=datetime.datetime.now().isoformat(), source=source
-    )
+def check_joke_id_exists(joke_id):
+    sql = "select id from jokes where id={joke_id}".format(joke_id=joke_id)
     conn = db.get_jokes_app_connection()
-    db.execute_update(conn, sql)
+    joke_id_exists = not db.execute_read(conn, sql).empty
+    return joke_id_exists
+
+
+def insert_rating_joke(user_id: str, joke_id: int, rating: float, source: str) -> bool:
+    if check_user_exists(user_id) and check_joke_id_exists(joke_id):
+        conn = db.get_jokes_app_connection()
+
+        model = "ratings"
+        d_values = {
+            "user_id": user_id,
+            "joke_id": joke_id,
+            "rating": rating,
+            "created_at": datetime.datetime.now().isoformat(),
+            "source": source,
+        }
+        db.add_record(conn, model, d_values)
+        return True
+    else:
+        return False
+
+
+def upsert_rating_joke(user_id: str, joke_id: int, rating: float, source: str) -> bool:
+    if check_user_exists(user_id) and check_joke_id_exists(joke_id):
+        try:
+            sql = """
+        INSERT INTO ratings (user_id, joke_id, rating, created_at, source)
+        VALUES ('{user_id}', {joke_id}, {rating}, '{created_at}', '{source}')
+        ON CONFLICT (user_id, joke_id)
+        DO UPDATE
+        SET rating = {rating};
+            """.format(
+                user_id=user_id,
+                joke_id=joke_id,
+                rating=rating,
+                created_at=datetime.datetime.now().isoformat(),
+                source=source,
+            )
+            conn = db.get_jokes_app_connection()
+            db.execute_update(conn, sql)
+        except sqlalchemy.exc.ProgrammingError:
+            return False
+
+        return True
+    else:
+        return False  # id user does not exist in DB
 
 
 def upsert_joke_tag(user_id: [str, int], joke_id: int, tag_id: int):

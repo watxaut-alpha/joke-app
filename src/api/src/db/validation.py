@@ -23,7 +23,7 @@ def add_joke_to_twitter_table(conn: Engine, d_joke: dict) -> None:
     db.add_record(conn, model, d_joke)
 
 
-def get_random_twitter_joke() -> pd.DataFrame:
+def get_not_validated_joke() -> pd.DataFrame:
     conn = db.get_jokes_app_connection()
     return db.get_random_element(conn, "validate_jokes", where="is_joke is null")
 
