@@ -1,6 +1,7 @@
 import datetime
 import uuid
 from sqlalchemy.engine import Engine
+import sqlalchemy.exc
 
 try:
     import src.db.core as db
@@ -46,6 +47,19 @@ def add_user_mail(email: str) -> bool:
     else:
         print("User with email: '{}' already exists. Skipping..".format(email))
     return True
+
+
+def remove_user_mail(email: str) -> (bool, str):
+    conn = db.get_jokes_app_connection()
+    if has_db_mail_user(conn, email):
+        sql = "DELETE FROM public.users_mail WHERE email='{email}';".format(email=email)
+        try:
+            db.execute_update(conn, sql)
+            return True, "User unsubscribed successfully. Sorry to see you go!"
+        except sqlalchemy.exc.ProgrammingError:
+            return False, "Error"  # some error in executing delete script
+    else:
+        return True, "user not in db"  # the user is not in the DB already
 
 
 def add_admin_user(conn: Engine, username: str, email: str, hashed_password: str, disabled: bool, scopes: str) -> bool:

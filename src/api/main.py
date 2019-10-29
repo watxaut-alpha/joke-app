@@ -202,7 +202,7 @@ async def add_user(user: TelegramUser, current_user: auth.User = Depends(get_cur
     return user
 
 
-@app.post("/user/mail/add", status_code=201)
+@app.post("/user/mail/subscribe", status_code=201)
 async def add_mail_user(user: MailUser):
     """
     Adds a user to the users_mail table. Every 8.30 (Spain Local Timezone) a cron sends a mail to every entry in the
@@ -212,6 +212,17 @@ async def add_mail_user(user: MailUser):
     """
     users.add_user_mail(user.email)
     return user
+
+
+@app.post("/user/mail/unsubscribe", status_code=201)
+async def unsubscribe_from_mail(user: MailUser):
+    """
+    Removes user from the distribution mail list
+    :param user: MailUser model
+    :return: returns MailUser model
+    """
+    is_removed, msg = users.remove_user_mail(user.email)
+    return {"message": msg, "is_removed": is_removed}
 
 
 @app.get("/jokes/random")
