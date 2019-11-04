@@ -143,7 +143,7 @@ async def main(request: Request):
 
 @app.exception_handler(404)
 async def not_found(request, exc):
-    return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+    return templates.TemplateResponse("fpqll.html", {"request": request}, status_code=404)
 
 
 @app.get("/openapi.json", include_in_schema=False)
@@ -221,8 +221,8 @@ async def add_mail_user(request: Request):
     """
     Adds a user to the users_mail table. Every 8.30 (Spain Local Timezone) a cron sends a mail to every entry in the
     users_mail with a joke and the ability to rate it from the mail.
-    :param user: MailUser model
-    :return: returns MailUser model
+    :param request: Request object
+    :return: returns a template
     """
     d_email = dict(await request.form())
     users.add_user_mail(d_email["email"])
@@ -238,8 +238,7 @@ async def show_unsubscribe_page(request: Request):
 async def unsubscribe_from_mail(request: Request):
     """
     Removes user from the distribution mail list
-    :param user: MailUser model
-    :param request:
+    :param request: Request object
     :return: returns MailUser model
     """
 
