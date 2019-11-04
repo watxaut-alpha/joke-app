@@ -211,27 +211,46 @@ async def add_user(user: TelegramUser, current_user: auth.User = Depends(get_cur
     return user
 
 
-@app.post("/user/mail/subscribe", status_code=201)
-async def add_mail_user(user: MailUser):
+@app.get("/user/mail/subscribe", status_code=200)
+async def show_subscribe_page(request: Request):
+    return templates.TemplateResponse("subscribe.html", {"request": request})
+
+
+@app.post("/user/mail/add", status_code=201)
+async def add_mail_user(request: Request):
     """
     Adds a user to the users_mail table. Every 8.30 (Spain Local Timezone) a cron sends a mail to every entry in the
     users_mail with a joke and the ability to rate it from the mail.
     :param user: MailUser model
     :return: returns MailUser model
     """
-    users.add_user_mail(user.email)
-    return user
+    d_email = dict(await request.form())
+    users.add_user_mail(d_email["email"])
+    return templates.TemplateResponse("subscribed.html", {"request": request})
 
 
-@app.post("/user/mail/unsubscribe", status_code=201)
-async def unsubscribe_from_mail(user: MailUser):
+@app.get("/user/mail/unsubscribe", status_code=200)
+async def show_unsubscribe_page(request: Request):
+    return templates.TemplateResponse("unsubscribe.html", {"request": request})
+
+
+@app.post("/user/mail/unsubscribed", status_code=201)
+async def unsubscribe_from_mail(request: Request):
     """
     Removes user from the distribution mail list
     :param user: MailUser model
+    :param request:
     :return: returns MailUser model
     """
-    is_removed, msg = users.remove_user_mail(user.email)
-    return {"message": msg, "is_removed": is_removed}
+
+    d_email = dict(await request.form())
+    is_removed, msg = users.remove_user_mail(d_email["email"])
+
+    if is_removed:
+        # return {"message": msg, "is_removed": is_removed}
+        return templates.TemplateResponse("unsubscribed.html", {"request": request})
+    else:
+        return {"message": msg, "is_removed": is_removed}
 
 
 @app.get("/jokes/random")
