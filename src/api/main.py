@@ -16,11 +16,18 @@ from starlette.staticfiles import StaticFiles
 from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.templating import Jinja2Templates
 
-import src.auth.core as auth
-import src.db.jokes as jokes
-import src.db.users as users
-import src.db.validation as validation
-from src.auth.secret import SECRET_KEY, ALGORITHM, DOCS_USER, DOCS_PASSWORD
+try:
+    import src.auth.core as auth
+    import src.db.jokes as jokes
+    import src.db.users as users
+    import src.db.validation as validation
+    from src.auth.secret import SECRET_KEY, ALGORITHM, DOCS_USER, DOCS_PASSWORD
+except ModuleNotFoundError:
+    import src.api.src.auth.core as auth
+    import src.api.src.db.jokes as jokes
+    import src.api.src.db.users as users
+    import src.api.src.db.validation as validation
+    from src.api.src.auth.secret import SECRET_KEY, ALGORITHM, DOCS_USER, DOCS_PASSWORD
 
 # prod
 # uvicorn main:app --host 0.0.0.0 --port 80
@@ -46,7 +53,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 security = HTTPBasic()  # this one is only for /docs endpoint
 
 
-# OAuth User login
+# OAuth User login. Code gotten from https://fastapi.tiangolo.com/tutorial/security/intro/ and adapted for my app
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=HTTP_401_UNAUTHORIZED,
@@ -67,6 +74,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     return user
 
 
+# OAuth User login. Code gotten from https://fastapi.tiangolo.com/tutorial/security/intro/ and adapted for my app
 async def get_current_active_user(current_user: auth.User = Depends(get_current_user)):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
@@ -101,10 +109,11 @@ class UserTag(BaseModel):
     tag_id: int
 
 
+# OAuth User login. Code gotten from https://fastapi.tiangolo.com/tutorial/security/intro/ and adapted for my app
 @app.post("/token", response_model=auth.Token, include_in_schema=False)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = auth.authenticate_user(pwd_context, form_data.username, form_data.password)
-    if not user:
+    if user is None:
         raise HTTPException(
             status_code=HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",

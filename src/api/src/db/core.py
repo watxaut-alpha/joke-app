@@ -41,18 +41,15 @@ def add_record(conn: Engine, model: str, d_values: dict) -> bool:
 
     # store data in the Connection DB
     df.to_sql(model, con=conn, if_exists="append", index=False)
-
     return True
 
 
 def add_records(conn: Engine, model: str, df: pd.DataFrame):
     df.to_sql(model, con=conn, if_exists="append", index=False)
-
     return True
 
 
 def get_random_element(conn: Engine, table: str, where: str = "") -> pd.DataFrame:
-
     # query a random element
     if where == "":
         sql = "SELECT * FROM {table} ORDER BY random() LIMIT 1;".format(table=table)

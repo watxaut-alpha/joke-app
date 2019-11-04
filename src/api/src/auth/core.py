@@ -4,8 +4,12 @@ from datetime import timedelta
 import jwt
 from pydantic import BaseModel
 
-import src.db.users as users
-from src.auth.secret import ALGORITHM, SECRET_KEY
+try:
+    import src.db.users as users
+    from src.auth.secret import ALGORITHM, SECRET_KEY
+except ModuleNotFoundError:
+    import src.api.src.db.users as users
+    from src.api.src.auth.secret import ALGORITHM, SECRET_KEY
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -31,24 +35,25 @@ class UserInDB(User):
     hashed_password: str
 
 
-def get_user(username: str):
+def get_user(username: str) -> [UserInDB, None]:
     df = users.get_admin_users()
     if username in df["username"].values:
         df = df[df["username"] == username]
         user_dict = df.to_dict(orient="index")[0]
         return UserInDB(**user_dict)
+    return None
 
 
-def authenticate_user(pwd_context, username: str, password: str):
+def authenticate_user(pwd_context, username: str, password: str) -> [UserInDB, None]:
     user = get_user(username)
-    if not user:
-        return False
+    if user is None:
+        return None
     if not verify_password(pwd_context, password, user.hashed_password):
-        return False
+        return None
     return user
 
 
-def create_access_token(*, data: dict, expires_delta: timedelta = None):
+def create_access_token(*, data: dict, expires_delta: timedelta = None) -> bytes:
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.datetime.utcnow() + expires_delta
@@ -59,9 +64,9 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-def get_password_hash(pwd_context, password):
+def get_password_hash(pwd_context, password) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(pwd_context, plain_password, hashed_password):
+def verify_password(pwd_context, plain_password, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
