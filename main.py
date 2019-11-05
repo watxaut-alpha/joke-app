@@ -4,7 +4,6 @@ import os
 
 import src.tasks.send as mail
 import src.tasks.validate as validate
-import src.tasks.notebooks as notebooks
 
 
 if __name__ == "__main__":
@@ -17,7 +16,7 @@ if __name__ == "__main__":
         "-a",
         "--action",
         type=str,
-        choices=["send_joke_mail", "validate_jokes", "export_jupyter"],
+        choices=["send_joke_mail", "validate_jokes"],
         help="Type of action to run. Leave empty to run the bot",
     )
 
@@ -32,7 +31,5 @@ if __name__ == "__main__":
         mail.send_mail()
     elif args.action == "validate_jokes":
         validate.put_validated_jokes_in_joke_db()
-    elif args.action == "export_jupyter":
-        notebooks.export_user_analysis()
     else:
         raise Exception("Option for action not recognized: '{}'".format(args.action))
