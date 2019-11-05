@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cd /home/repos/joke-app
 source venv/bin/activate
