@@ -3,6 +3,7 @@
 *config.py
 insert_jokes.py
 notebooks/exports
+src/api/templates/analysis_mail_users.html
 
 # everything ended with virgulilla
 *~

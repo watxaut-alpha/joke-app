@@ -375,3 +375,8 @@ async def get_random_validate_joke():
     else:
         response = {"joke": "No more jokes to validate :D", "joke_id": -1}
     return response
+
+
+@app.get("/notebooks/ratings")
+async def get_ratings_notebook(request: Request):
+    return templates.TemplateResponse("analysis_mail_users.html", {"request": request})
