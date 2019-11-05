@@ -12,5 +12,7 @@ services:
     build:
       context: ./src/api
       dockerfile: Dockerfile
+    volumes:
+      - ./src/api/templates:/app/templates
     ports:
       - "80:80"
