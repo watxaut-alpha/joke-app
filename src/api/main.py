@@ -243,7 +243,7 @@ async def unsubscribe_from_mail(request: Request):
     """
 
     d_email = dict(await request.form())
-    is_removed, msg = users.remove_user_mail(d_email["email"])
+    is_removed, msg = users.soft_delete_user_mail(d_email["email"])
 
     if is_removed:
         # return {"message": msg, "is_removed": is_removed}

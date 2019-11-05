@@ -28,10 +28,15 @@ def add_user_telegram(user_id: str, first_name: str) -> bool:
 
 def get_users_mail():
     conn = db.get_jokes_app_connection()
-    return db.execute_read(conn, "select * from users_mail")
+    return db.execute_read(conn, "select * from users_mail where deleted_at is null")
 
 
 def has_db_mail_user(conn: Engine, email: str) -> bool:
+    df = db.execute_read(conn, "select email from users_mail where email='{}'".format(email))
+    return not df.empty
+
+
+def has_db_mail_user_deleted(conn: Engine, email: str) -> bool:
     df = db.execute_read(conn, "select email from users_mail where email='{}'".format(email))
     return not df.empty
 
@@ -44,9 +49,26 @@ def add_user_mail(email: str) -> bool:
         d_user_mail = {"email": email, "id_hash": s_uuid, "created_at": datetime.datetime.now().isoformat()}
 
         db.add_record(conn, "users_mail", d_user_mail)
-    else:
-        print("User with email: '{}' already exists. Skipping..".format(email))
+    else:  # can be a user resubscribing
+        if has_db_mail_user_deleted(conn, email):  # if its true then set deleted_at null
+            sql = "UPDATE public.users_mail SET deleted_at=null WHERE email='{email}';".format(email=email)
+            db.execute_update(conn, sql)
+        else:
+            print("User with email: '{}' already exists. Skipping..".format(email))
     return True
+
+
+def soft_delete_user_mail(email: str) -> (bool, str):
+    conn = db.get_jokes_app_connection()
+    if has_db_mail_user(conn, email):
+        sql = "UPDATE public.users_mail SET deleted_at=now() WHERE email='{email}';".format(email=email)
+        try:
+            db.execute_update(conn, sql)
+            return True, "User unsubscribed successfully. Sorry to see you go!"
+        except sqlalchemy.exc.ProgrammingError:
+            return False, "Error"  # some error in executing delete script
+    else:
+        return True, "user not in db"  # the user is not in the DB already
 
 
 def remove_user_mail(email: str) -> (bool, str):
