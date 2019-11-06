@@ -15,5 +15,6 @@ services:
     volumes:
       - ./src/api/templates:/app/templates
       - ./src/api/.well-known:/app/.well-known
+      - ./src/api/cert:/app/cert
     ports:
       - "443:443"
