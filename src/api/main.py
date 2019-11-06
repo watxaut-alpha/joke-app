@@ -11,7 +11,7 @@ from jwt import PyJWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from starlette.requests import Request
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, FileResponse
 from starlette.staticfiles import StaticFiles
 from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.templating import Jinja2Templates
@@ -176,6 +176,12 @@ async def get_documentation(credentials: HTTPBasicCredentials = Depends(security
             headers={"WWW-Authenticate": "Basic"},
         )
     return get_swagger_ui_html(openapi_url="/openapi.json", title="{} Docs".format(title))
+
+
+@app.get("/.well-known/acme-challenge/{file_name}", include_in_schema=False)
+async def acme_challenge(file_name: str):
+    file_path = "./.well-known/acme-challenge/{}".format(file_name)
+    return FileResponse(file_path)
 
 
 @app.get("/legal", include_in_schema=False)
