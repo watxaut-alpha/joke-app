@@ -16,5 +16,15 @@ services:
       - ./src/api/templates:/app/templates
       - ./src/api/.well-known:/app/.well-known
       - ./src/api/cert:/app/cert
+  nginx-reverse-proxy:
+    image: nginx-reverse-proxy:0.0.1
     ports:
-      - "443:443"
+      - 80:80
+      - 443:443
+    restart: always
+    build:
+      context: .src/api/nginx
+    volumes:
+      - ./conf:/etc/nginx
+    links:
+      - joke-api
