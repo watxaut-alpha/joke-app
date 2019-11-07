@@ -23,7 +23,7 @@ services:
       - 443:443
     restart: always
     build:
-      context: .src/api/nginx
+      context: ./src/api/nginx
     volumes:
       - ./conf:/etc/nginx
     links:
