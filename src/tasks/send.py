@@ -1,11 +1,11 @@
 import logging
 
-import src.tasks.mail.core as mail
-import src.tasks.mail.smtp as smtp
+import src.api.src.mail.core as mail
+import src.api.src.mail.smtp as smtp
 import src.api.src.db.jokes as jokes
 import src.api.src.db.core as db
 import src.api.src.db.users as users
-from src.tasks.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
+from src.api.src.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
 
 
 def send_mail():
@@ -24,7 +24,7 @@ def send_mail():
     d_joke = df_joke.to_dict(orient="index")[0]
     d_joke["joke"] = d_joke["joke"].replace("\n", "<br>")  # replace \n with html
 
-    is_sent = mail.send_mail(USER, PASSWORD, d_receivers, d_joke, mail.SUBJECT, provider="smtp")
+    is_sent = mail.send_joke_mails(USER, PASSWORD, d_receivers, d_joke, provider="smtp")
 
     if is_sent:
         jokes.put_sent_joke_db(conn, d_joke["id"])

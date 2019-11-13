@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 import jwt
-import requests
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
@@ -21,12 +20,17 @@ try:
     import src.db.jokes as jokes
     import src.db.users as users
     import src.db.validation as validation
+    import src.helpers as helpers
+    import src.mail.core as mail
+    from src.mail.secret import MAILGUN_USER, MAILGUN_PWD
     from src.auth.secret import SECRET_KEY, ALGORITHM, DOCS_USER, DOCS_PASSWORD
 except ModuleNotFoundError:
     import src.api.src.auth.core as auth
     import src.api.src.db.jokes as jokes
     import src.api.src.db.users as users
+    import src.api.src.helpers as helpers
     import src.api.src.db.validation as validation
+    import src.api.src.mail.core as mail
     from src.api.src.auth.secret import SECRET_KEY, ALGORITHM, DOCS_USER, DOCS_PASSWORD
 
 # prod
@@ -131,13 +135,7 @@ async def main(request: Request):
     :param request: User GET Request
     :return: html with template index.html
     """
-
-    r_cat = requests.get("https://api.thecatapi.com/v1/images/search")
-    if r_cat:  # status 200
-        url = r_cat.json()[0]["url"]
-    else:
-        url = "Cat not found"
-
+    url = helpers.get_cat_url()
     return templates.TemplateResponse("index.html", {"request": request, "url": url})
 
 
@@ -216,6 +214,11 @@ async def show_subscribe_page(request: Request):
     return templates.TemplateResponse("subscribe.html", {"request": request})
 
 
+async def send_mail_subscribed_user(email: str):
+    is_sent = mail.send_subscribed_mail(MAILGUN_USER, MAILGUN_PWD, email)
+    return {"is_sent": is_sent}
+
+
 @app.post("/user/mail/add", status_code=201)
 async def add_mail_user(request: Request):
     """
@@ -226,6 +229,10 @@ async def add_mail_user(request: Request):
     """
     d_email = dict(await request.form())
     users.add_user_mail(d_email["email"])
+
+    # send mail to subbed user
+    # TODO: TEST THIS
+    await send_mail_subscribed_user(d_email["email"])
     return templates.TemplateResponse("subscribed.html", {"request": request})
 
 

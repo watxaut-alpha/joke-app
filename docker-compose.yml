@@ -14,6 +14,5 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./src/api/templates:/app/templates
-      - ./src/api/static:/app/static
     ports:
       - 5000:5000

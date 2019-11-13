@@ -10,8 +10,8 @@ src/api/cert
 *~
 
 # auth for google Gmail
-src/tasks/mail/google/credentials.json
-src/tasks/mail/google/token.pickle
+src/api/src/mail/google/credentials.json
+src/api/src/mail/google/token.pickle
 
 # GITIGNORE.IO[PYTHON, PYCHARM]
 # Created by https://www.gitignore.io/api/python,pycharm
