@@ -323,6 +323,12 @@ async def joke_rating_put(user_rating: UserRating):
         return {"message": "Error: timed-out, hash id not in DB or joke id not in DB"}
 
 
+@app.get("/jokes/next")
+async def get_5_next_jokes(current_user: auth.User = Depends(get_current_user)):
+    df = jokes.get_5_next_jokes_to_send()
+    return {"next_5": df.to_json()}
+
+
 @app.put("/jokes/validate")
 async def update_joke_validation(user_validation: UserValidation):
     """

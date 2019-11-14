@@ -16,7 +16,7 @@ def send_mail():
     d_receivers = users.get_users_mail().to_dict(orient="index")
 
     # get a joke that is not sent previously
-    df_joke = jokes.get_random_joke_not_sent_by_mail_already(conn)
+    df_joke = jokes.get_joke_not_sent_by_mail_already(conn)
     if df_joke.empty:  # no more jokes in the DB???
         return smtp.send_mail_watxaut(USER, PASSWORD, "NO MORE JOKES IN DB!!!")
 

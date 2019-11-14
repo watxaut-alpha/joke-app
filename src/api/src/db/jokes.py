@@ -14,8 +14,26 @@ def get_random_joke() -> pd.DataFrame:
     return db.get_random_element(conn, "jokes")
 
 
-def get_random_joke_not_sent_by_mail_already(conn: Engine) -> pd.DataFrame:
-    return db.get_random_element(conn, "jokes", "jokes.id not in (select joke_id from sent_jokes)")
+def get_joke_not_sent_by_mail_already(conn: Engine, limit=1) -> pd.DataFrame:
+    sql = """
+    select
+        *
+    from
+        jokes_to_send
+    where
+        jokes_to_send.id not in (select joke_id from sent_jokes) and
+        (jokes_to_send.do_send is null or jokes_to_send.do_send != false)
+    limit {limit}
+    """.format(
+        limit=limit
+    )
+
+    return db.execute_read(conn, sql)
+
+
+def get_5_next_jokes_to_send():
+    conn = db.get_jokes_app_connection()
+    return get_joke_not_sent_by_mail_already(conn, limit=5)
 
 
 def check_user_exists(user_id: str):
