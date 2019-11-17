@@ -325,8 +325,9 @@ async def joke_rating_put(user_rating: UserRating):
 
 @app.get("/jokes/next")
 async def get_5_next_jokes(current_user: auth.User = Depends(get_current_user)):
-    df = jokes.get_5_next_jokes_to_send()
-    return {"next_5": df.to_json()}
+    df = jokes.get_5_next_jokes_to_send().drop(["author", "rating", "tags", "created_at"], axis=1)
+    s = df.to_dict(orient="index")
+    return s
 
 
 @app.put("/jokes/validate")
