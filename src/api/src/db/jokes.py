@@ -67,7 +67,7 @@ def check_user_exists(user_id: str):
 
 
 def check_joke_id_exists(joke_id):
-    sql = "select id from jokes where id={joke_id}".format(joke_id=joke_id)
+    sql = "select id from jokes_to_send where id={joke_id}".format(joke_id=joke_id)
     conn = db.get_jokes_app_connection()
     joke_id_exists = not db.execute_read(conn, sql).empty
     return joke_id_exists
