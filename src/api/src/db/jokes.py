@@ -14,21 +14,36 @@ def get_random_joke() -> pd.DataFrame:
     return db.get_random_element(conn, "jokes")
 
 
-def get_joke_not_sent_by_mail_already(conn: Engine, limit=1) -> pd.DataFrame:
-    sql = """
+def __get_sql_jokes(limit, from_author):
+    if from_author:
+        aux_sql = "jokes_to_send.author is not null"
+    else:
+        aux_sql = "jokes_to_send.author is null"
+
+    sql_author = """
     select
         *
     from
         jokes_to_send
     where
         jokes_to_send.id not in (select joke_id from sent_jokes) and
-        (jokes_to_send.do_send is null or jokes_to_send.do_send != false)
+        (jokes_to_send.do_send is null or jokes_to_send.do_send != false) and
+        {author}
+    order by created_at desc,
     limit {limit}
     """.format(
-        limit=limit
+        limit=limit, author=aux_sql
     )
+    return sql_author
 
-    return db.execute_read(conn, sql)
+
+def get_joke_not_sent_by_mail_already(conn: Engine, limit=1) -> pd.DataFrame:
+    sql_author = __get_sql_jokes(limit, from_author=True)
+    df = db.execute_read(conn, sql_author)
+    if df.empty:  # no more jokes from authors, get from scrapped sources
+        sql_author = __get_sql_jokes(limit, from_author=False)
+        df = db.execute_read(conn, sql_author)
+    return df
 
 
 def get_5_next_jokes_to_send():
@@ -115,8 +130,9 @@ DO NOTHING;
     db.execute_update(conn, sql)
 
 
-def put_joke_db(conn: Engine, joke: str, author: str) -> None:
-    model = "jokes"
+def put_joke_db(joke: str, author: str) -> None:
+    conn = db.get_jokes_app_connection()
+    model = "jokes_to_send"
     d_values = {
         "joke": joke,
         "author": author,

@@ -22,6 +22,11 @@ def send_mail():
 
     # else, there is still jokes so unpack
     d_joke = df_joke.to_dict(orient="index")[0]
+
+    # add author if any
+    if d_joke["author"] not in [None, ""]:
+        d_joke["joke"] += "\n\nby {}".format(d_joke["author"])
+
     d_joke["joke"] = d_joke["joke"].replace("\n", "<br>")  # replace \n with html
 
     is_sent = mail.send_joke_mails(USER, PASSWORD, d_receivers, d_joke, provider="smtp")

@@ -107,6 +107,11 @@ class UserValidation(BaseModel):
     is_joke: bool
 
 
+class UserJoke(BaseModel):
+    joke: str
+    author: str
+
+
 class UserTag(BaseModel):
     joke_id: int
     user_id: str
@@ -350,6 +355,12 @@ async def get_tags():
     """
     l_tags = jokes.get_tags()
     return {"tags": l_tags}
+
+
+@app.post("/jokes/add")
+async def add_joke(user_joke: UserJoke, current_user: auth.User = Depends(get_current_user)):
+    jokes.put_joke_db(**user_joke.dict())
+    return {"message": "success"}
 
 
 @app.put("/jokes/tag")
