@@ -29,7 +29,7 @@ def __get_sql_jokes(limit, from_author):
         jokes_to_send.id not in (select joke_id from sent_jokes) and
         (jokes_to_send.do_send is null or jokes_to_send.do_send != false) and
         {author}
-    order by created_at desc,
+    order by created_at desc
     limit {limit}
     """.format(
         limit=limit, author=aux_sql
