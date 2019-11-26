@@ -1,8 +1,9 @@
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
 
-ADD ./ /app
+ADD requirements.txt /app/
 
 RUN pip3 install -r requirements.txt
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000", "--proxy-headers"]
+ADD ./ /app
 
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000", "--proxy-headers"]

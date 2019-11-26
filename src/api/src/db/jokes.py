@@ -14,7 +14,7 @@ def get_random_joke() -> pd.DataFrame:
     return db.get_random_element(conn, "jokes")
 
 
-def __get_sql_jokes(limit, from_author):
+def __get_sql_jokes(limit, from_author, sent_from):
     if from_author:
         aux_sql = "jokes_to_send.author is not null"
     else:
@@ -26,29 +26,29 @@ def __get_sql_jokes(limit, from_author):
     from
         jokes_to_send
     where
-        jokes_to_send.id not in (select joke_id from sent_jokes) and
+        jokes_to_send.id not in (select joke_id from sent_jokes where sent_from='{sent_from}') and
         (jokes_to_send.do_send is null or jokes_to_send.do_send != false) and
         {author}
     order by created_at desc
     limit {limit}
     """.format(
-        limit=limit, author=aux_sql
+        limit=limit, author=aux_sql, sent_from=sent_from
     )
     return sql_author
 
 
-def get_joke_not_sent_by_mail_already(conn: Engine, limit=1) -> pd.DataFrame:
-    sql_author = __get_sql_jokes(limit, from_author=True)
+def get_joke_not_sent_by_pfm_already(conn: Engine, limit=1, sent_from="mail") -> pd.DataFrame:
+    sql_author = __get_sql_jokes(limit, from_author=True, sent_from=sent_from)
     df = db.execute_read(conn, sql_author)
     if df.empty:  # no more jokes from authors, get from scrapped sources
-        sql_author = __get_sql_jokes(limit, from_author=False)
+        sql_author = __get_sql_jokes(limit, from_author=False, sent_from=sent_from)
         df = db.execute_read(conn, sql_author)
     return df
 
 
 def get_5_next_jokes_to_send():
     conn = db.get_jokes_app_connection()
-    return get_joke_not_sent_by_mail_already(conn, limit=5)
+    return get_joke_not_sent_by_pfm_already(conn, limit=5, sent_from="mail")
 
 
 def check_user_exists(user_id: str):
@@ -143,9 +143,9 @@ def put_joke_db(joke: str, author: str) -> None:
     db.add_record(conn, model, d_values)
 
 
-def put_sent_joke_db(conn: Engine, joke_id: int) -> None:
+def put_sent_joke_db(conn: Engine, joke_id: int, sent_from: str) -> None:
     model = "sent_jokes"
-    d_values = {"joke_id": joke_id, "created_at": datetime.datetime.now().isoformat()}
+    d_values = {"joke_id": joke_id, "sent_from": sent_from, "created_at": datetime.datetime.now().isoformat()}
     db.add_record(conn, model, d_values)
 
 

@@ -16,7 +16,7 @@ def send_mail():
     d_receivers = users.get_users_mail().to_dict(orient="index")
 
     # get a joke that is not sent previously
-    df_joke = jokes.get_joke_not_sent_by_mail_already(conn)
+    df_joke = jokes.get_joke_not_sent_by_pfm_already(conn, limit=1, sent_from="mail")
     if df_joke.empty:  # no more jokes in the DB???
         return smtp.send_mail_watxaut(USER, PASSWORD, "NO MORE JOKES IN DB!!!")
 
@@ -32,9 +32,13 @@ def send_mail():
     is_sent = mail.send_joke_mails(USER, PASSWORD, d_receivers, d_joke, provider="smtp")
 
     if is_sent:
-        jokes.put_sent_joke_db(conn, d_joke["id"])
+        jokes.put_sent_joke_db(conn, d_joke["id"], sent_from="mail")
         logger.info("Joke sent via mail with joke_id='{}'".format(d_joke["id"]))
     else:
         logger.error("Joke not sent! joke_id='{}'".format(d_joke["id"]))
 
     return is_sent
+
+
+def send_tweet():
+    pass
