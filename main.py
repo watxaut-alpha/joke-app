@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 
-import src.tasks.send as mail
+import src.tasks.send as tasks
 import src.tasks.validate as validate
 
 
@@ -16,7 +16,7 @@ if __name__ == "__main__":
         "-a",
         "--action",
         type=str,
-        choices=["send_joke_mail", "validate_jokes"],
+        choices=["send_joke_mail", "validate_jokes", "tweet_joke"],
         help="Type of action to run. Leave empty to run the bot",
     )
 
@@ -28,8 +28,10 @@ if __name__ == "__main__":
     os.chdir(dname)
 
     if args.action == "send_joke_mail":
-        mail.send_mail()
+        tasks.send_mail()
     elif args.action == "validate_jokes":
         validate.put_validated_jokes_in_joke_db()
+    elif args.action == "tweet_joke":
+        tasks.send_tweet()
     else:
         raise Exception("Option for action not recognized: '{}'".format(args.action))
