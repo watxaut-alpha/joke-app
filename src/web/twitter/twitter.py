@@ -1,14 +1,12 @@
 import logging
 import traceback
+
 import tweepy
-from typing import List
-from tweepy.models import Status
 
 import src.api.src.db.core as db
 import src.api.src.db.validation as validation
 from src.web.twitter.secret import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_SECRET
 from src.web.twitter.twitter_config import JOKES_FROM_USERS, MAX_TWEETS_FOR_USER, TWITTER_LANG
-
 
 logger = logging.getLogger("jokeBot")
 
@@ -32,7 +30,12 @@ def init_twitter_handler() -> tweepy.API:
     return api
 
 
-def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> List[dict, ...]:
+def send_tweet(api: tweepy.API, msg: str):
+    response = api.update_status(msg)
+    return response
+
+
+def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> list:
 
     logger.debug("Getting jokes from twitter user: '{}'".format(user_name))
 
@@ -60,7 +63,7 @@ def get_tweets_from_user(api: tweepy.API, user_name: str, max_tweets: int) -> Li
     return l_tweets
 
 
-def get_tweets(api: tweepy.API, query: str, max_tweets: int) -> List[Status, ...]:
+def get_tweets(api: tweepy.API, query: str, max_tweets: int) -> list:
 
     try:
         l_tweets = api.search(q=query, lang=TWITTER_LANG, count=max_tweets)
