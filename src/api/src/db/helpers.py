@@ -11,7 +11,7 @@ def populate_jokes_db(host: str, path_json: str) -> None:
     engine = db.connect(host, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
 
     df_json = pd.read_json(path_json, encoding="utf8")
-    df_json.to_sql("jokes", con=engine, if_exists="append", index=False)
+    df_json.to_sql("jokes_to_send", con=engine, if_exists="append", index=False)
 
 
 def add_telegram_log(conn: Engine, sender: str, message: str, id_user: int, item_1: str, var_txt_1: str) -> bool:

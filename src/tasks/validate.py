@@ -21,7 +21,7 @@ def put_validated_jokes_in_joke_db():
         df_jokes = df_validated_jokes.drop(columns=col_exclude).rename(columns=col_rename)
 
         # add all the records to Jokes DB
-        db.add_records(conn, "jokes", df_jokes)
+        db.add_records(conn, "jokes_to_send", df_jokes)
 
         # put soft-delete in validate_jokes
         update_query = "update validate_jokes set deleted_at = NOW() where deleted_at is null and is_joke is true"
