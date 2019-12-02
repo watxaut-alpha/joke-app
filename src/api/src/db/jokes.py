@@ -11,7 +11,7 @@ except ModuleNotFoundError:
 
 def get_random_joke() -> pd.DataFrame:
     conn = db.get_jokes_app_connection()
-    return db.get_random_element(conn, "jokes_to_send")
+    return db.get_random_element(conn, "jokes_to_send", where="do_send is null or do_send != false")
 
 
 def __get_sql_jokes(limit, from_author, sent_from):
