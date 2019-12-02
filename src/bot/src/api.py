@@ -40,7 +40,7 @@ def insert_rating_joke(user_id: str, joke_id: int, f_rating: float) -> requests.
 @connect
 def update_joke_validation(validated_joke_id: int, user_id: str, is_joke: bool) -> requests.Response:
     url = "{host}/jokes/validate".format(host=HOST)
-    data = {"joke_id": validated_joke_id, "user_id": user_id, "is_joke": is_joke}
+    data = {"joke_id": validated_joke_id, "user_id": str(user_id), "is_joke": is_joke}
     return requests.put(url, json=data, timeout=TIMEOUT)
 
 
