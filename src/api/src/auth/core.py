@@ -37,6 +37,7 @@ class UserInDB(User):
 def get_user(username: str) -> [UserInDB, None]:
     df = users.get_admin_users()
     if username in df["username"].values:
+        print(username)
         df = df[df["username"] == username]
         user_dict = df.to_dict(orient="index")[0]
         return UserInDB(**user_dict)
