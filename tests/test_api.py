@@ -51,7 +51,7 @@ def test_add_user_telegram_success():
             has_db_telegram_user.return_value = False
             add_record.return_value = True
 
-            url = "/user/telegram/add"
+            url = "/users/telegram/add"
             user_id = 666623826648
             first_name = "Joan de las nieves"
             data = {"user_id": str(user_id), "first_name": first_name}
