@@ -41,7 +41,7 @@ app.include_router(frontend.router)
 app.include_router(api_v1.api_router, prefix=API_V1_STR)
 
 
-@app.get("/openapi.json", include_in_schema=False)
+@app.get(f"{API_V1_STR}/openapi.json", include_in_schema=False)
 async def get_open_api_endpoint(credentials: HTTPBasicCredentials = Depends(security)):
     """
     Returns the openapi.json schema if the credentials are matched, else shows 401
@@ -70,4 +70,4 @@ async def get_documentation(credentials: HTTPBasicCredentials = Depends(security
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Basic"},
         )
-    return get_swagger_ui_html(openapi_url="/openapi.json", title="{} Docs".format(TITLE))
+    return get_swagger_ui_html(openapi_url=f"{API_V1_STR}/openapi.json", title="{} Docs".format(TITLE))

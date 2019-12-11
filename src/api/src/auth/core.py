@@ -11,11 +11,14 @@ from starlette.status import HTTP_401_UNAUTHORIZED
 try:
     import src.db.users as users
     from src.auth.secret import ALGORITHM, SECRET_KEY
+    from src.api.api_v1.params import API_V1_STR
 except ModuleNotFoundError:
     import src.api.src.db.users as users
     from src.api.src.auth.secret import ALGORITHM, SECRET_KEY
+    from src.api.src.api.api_v1.params import API_V1_STR
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{API_V1_STR}/token")
 
 
 class TokenData(BaseModel):
