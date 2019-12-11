@@ -26,9 +26,12 @@ def add_user_telegram(user_id: str, first_name: str) -> bool:
         return True
 
 
-def get_users_mail():
+def get_users_mail(is_debug=False):
     conn = db.get_jokes_app_connection()
-    return db.execute_read(conn, "select * from users_mail where deleted_at is null")
+    if not is_debug:
+        return db.execute_read(conn, "select * from users_mail where deleted_at is null")
+    else:
+        return db.execute_read(conn, "select * from users_mail where email = 'watxaut@gmail.com'")
 
 
 def has_db_mail_user(conn: Engine, email: str) -> bool:

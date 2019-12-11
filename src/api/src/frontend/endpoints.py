@@ -1,4 +1,5 @@
-import requests
+import logging
+
 from fastapi import APIRouter
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
@@ -6,16 +7,17 @@ from starlette.templating import Jinja2Templates
 try:
     import src.models as models
     import src.helpers as helpers
-    from src.api.api_v1.params import API_V1_STR
-    from src.db.secret import HOST
+    import src.db.jokes as jokes
+    from src.api.api_v1.params import API_V_STR
 except ModuleNotFoundError:
     import src.api.src.models as models
     import src.api.src.helpers as helpers
-    from src.api.src.api.api_v1.params import API_V1_STR
-    from src.api.src.db.secret import HOST
+    import src.api.src.db.jokes as jokes
+    from src.api.src.api.api_v1.params import API_V_STR
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+logger = logging.getLogger("jokeapp")
 
 
 @router.get("/", include_in_schema=False)
@@ -53,9 +55,8 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
     """
     if 0 <= rating <= 10:
         user_rating = models.UserRating(user_id=id_hash, joke_id=joke_id, rating=rating, source="mail")
-
-        req = requests.put(f"{HOST}/{API_V1_STR}/jokes/rating", data=user_rating)
-        if req:
+        b_rating = jokes.upsert_rating_joke(**user_rating.dict())
+        if b_rating:
             template = templates.TemplateResponse("thanks_rating.html", {"request": request, "rating": rating})
         else:
             reason = (
@@ -84,19 +85,23 @@ async def subscribe_user(request: Request):
     :return: returns a template
     """
     d_email = dict(await request.form())
-    mail_user = models.MailUser(email=d_email["email"])
-    req = requests.post(f"{HOST}/{API_V1_STR}/users/mail/add", data=mail_user)
-    if req:
+    is_sent = await helpers.put_user_db(d_email["email"])
+    if is_sent:
         return templates.TemplateResponse("subscribed.html", {"request": request})
     else:
         return templates.TemplateResponse(
-            "error.html", {"request": request, "status_code": req.status_code, "err_txt": req.text}
+            "error.html",
+            {
+                "request": request,
+                "status_code": 400,
+                "err_txt": "Email does not have a correct syntax, get in touch with watxaut@gmail.com",
+            },
         )
 
 
 @router.get("/users/mail/unsubscribe", status_code=200, include_in_schema=False)
 async def show_unsubscribe_page(request: Request):
-    return templates.TemplateResponse("unsubscribe.html", {"request": request})
+    return templates.TemplateResponse("unsubscribe.html", {"request": request, "API_V_STR": API_V_STR})
 
 
 @router.get("/notebooks/ratings", include_in_schema=False)

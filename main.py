@@ -20,6 +20,8 @@ if __name__ == "__main__":
         help="Type of action to run. Leave empty to run the bot",
     )
 
+    parser.add_argument("-d", "--debug", action="store_true", help="Does whatever with debug params")
+
     args = parser.parse_args()
 
     # change dir to current main.py (when executed in cron)
@@ -28,7 +30,7 @@ if __name__ == "__main__":
     os.chdir(dname)
 
     if args.action == "send_joke_mail":
-        tasks.send_mail()
+        tasks.send_mail(args.debug)
     elif args.action == "validate_jokes":
         validate.put_validated_jokes_in_joke_db()
     elif args.action == "tweet_joke":
