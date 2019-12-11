@@ -11,12 +11,12 @@ from starlette.templating import Jinja2Templates
 try:
     import src.api.api_v1.api as api_v1
     import src.frontend.endpoints as frontend
-    from src.api.api_v1.params import API_V1_STR, TITLE, DESCRIPTION
+    from src.api.api_v1.params import API_V_STR, TITLE, DESCRIPTION
     from src.auth.secret import DOCS_USER, DOCS_PASSWORD
 except ModuleNotFoundError:
     import src.api.src.api.api_v1.api as api_v1
     import src.api.src.frontend.endpoints as frontend
-    from src.api.src.api.api_v1.params import API_V1_STR, TITLE, DESCRIPTION
+    from src.api.src.api.api_v1.params import API_V_STR, TITLE, DESCRIPTION
     from src.api.src.auth.secret import DOCS_USER, DOCS_PASSWORD
 
 # prod
@@ -38,10 +38,10 @@ async def not_found(request, exc):
 
 
 app.include_router(frontend.router)
-app.include_router(api_v1.api_router, prefix=API_V1_STR)
+app.include_router(api_v1.api_router, prefix=API_V_STR)
 
 
-@app.get("/openapi.json", include_in_schema=False)
+@app.get(f"{API_V_STR}/openapi.json", include_in_schema=False)
 async def get_open_api_endpoint(credentials: HTTPBasicCredentials = Depends(security)):
     """
     Returns the openapi.json schema if the credentials are matched, else shows 401
@@ -54,10 +54,10 @@ async def get_open_api_endpoint(credentials: HTTPBasicCredentials = Depends(secu
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Basic"},
         )
-    return JSONResponse(get_openapi(title=TITLE, version=API_V1_STR, description=DESCRIPTION, routes=app.routes))
+    return JSONResponse(get_openapi(title=TITLE, version=API_V_STR, description=DESCRIPTION, routes=app.routes))
 
 
-@app.get(f"{API_V1_STR}/docs", include_in_schema=False)
+@app.get(f"{API_V_STR}/docs", include_in_schema=False)
 async def get_documentation(credentials: HTTPBasicCredentials = Depends(security)):
     """
     Returns the Swagger - openAPI page if the credentials in src/auth/secret.py are matched, else shows 401
@@ -70,4 +70,4 @@ async def get_documentation(credentials: HTTPBasicCredentials = Depends(security
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Basic"},
         )
-    return get_swagger_ui_html(openapi_url="/openapi.json", title="{} Docs".format(TITLE))
+    return get_swagger_ui_html(openapi_url=f"{API_V_STR}/openapi.json", title="{} Docs".format(TITLE))

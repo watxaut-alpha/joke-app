@@ -6,14 +6,12 @@ try:
     import src.auth.core as auth
     import src.db.users as db_users
     import src.models as models
-    import src.mail.core as mail
-    from src.mail.secret import MAILGUN_USER, MAILGUN_PWD
+    import src.helpers as helpers
 except ModuleNotFoundError:
     import src.api.src.auth.core as auth
     import src.api.src.db.users as db_users
     import src.api.src.models as models
-    import src.api.src.mail.core as mail
-    from src.api.rc.mail.secret import MAILGUN_USER, MAILGUN_PWD
+    import src.api.src.helpers as helpers
 
 
 router = APIRouter()
@@ -43,17 +41,9 @@ async def add_user(user: models.TelegramUser, current_user: auth.User = Depends(
     return user
 
 
-async def send_mail_subscribed_user(email: str):
-    is_sent = mail.send_subscribed_mail(MAILGUN_USER, MAILGUN_PWD, email)
-    return {"is_sent": is_sent}
-
-
 @router.post("/users/mail/add", tags=["users"], status_code=201)
 async def add_mail_user(mail_user: models.MailUser):
-    db_users.add_user_mail(mail_user.email)
-
-    # send mail to subbed user
-    await send_mail_subscribed_user(mail_user.email)
+    await helpers.put_user_db(mail_user.email)
     return mail_user
 
 
