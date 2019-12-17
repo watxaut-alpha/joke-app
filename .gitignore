@@ -5,6 +5,7 @@ insert_jokes.py
 notebooks/exports
 src/api/templates/exports
 src/api/cert
+*.env
 
 # everything ended with virgulilla
 *~
