@@ -31,6 +31,6 @@ services:
     env_file:
       - env-pgadmin.env
     ports:
-      - '5050:5050'
+      - '5555:5555'
 volumes:
   app-db-data:
