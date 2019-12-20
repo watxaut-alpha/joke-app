@@ -19,8 +19,11 @@ def connect(host: str, user: str, password: str, schema_name: str) -> Engine:
     return engine
 
 
-def get_jokes_app_connection() -> Engine:
-    return connect(DB_HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
+def get_jokes_app_connection(host=None) -> Engine:
+    if host is None:
+        return connect(DB_HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
+    else:
+        return connect(host, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
 
 
 def execute_update(conn: Engine, postgres_query: str) -> bool:

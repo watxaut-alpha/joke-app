@@ -7,15 +7,15 @@ import src.api.src.mail.core as mail
 import src.api.src.mail.smtp as smtp
 import src.web.twitter.twitter as twitter
 from src.api.src.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
-from src.api.src.db.secret import POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
 
 def send_mail(is_debug):
     logger = logging.getLogger("jokeBot")
 
-    conn = db.connect(host="localhost", user=POSTGRES_USER, password=POSTGRES_PASSWORD, schema_name=SCHEMA_NAME)
+    host = "localhost"
+    conn = db.get_jokes_app_connection(host)
 
-    d_receivers = users.get_users_mail(is_debug).to_dict(orient="index")
+    d_receivers = users.get_users_mail(is_debug, host=host).to_dict(orient="index")
 
     # get a joke that is not sent previously
     df_joke = jokes.get_joke_not_sent_by_pfm_already(conn, limit=1, sent_from="mail")
@@ -46,7 +46,8 @@ def send_mail(is_debug):
 def send_tweet():
     logger = logging.getLogger("jokeBot")
 
-    conn = db.get_jokes_app_connection()
+    host = "localhost"
+    conn = db.get_jokes_app_connection(host)
     # get a joke that is not sent previously
     df_joke = jokes.get_joke_not_sent_by_pfm_already(conn, limit=1, sent_from="twitter")
 
