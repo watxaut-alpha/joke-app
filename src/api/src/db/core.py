@@ -3,9 +3,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
 try:
-    from src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
+    from src.db.secret import DB_HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 except ModuleNotFoundError:
-    from src.api.src.db.secret import HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
+    from src.api.src.db.secret import DB_HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
 
 def connect(host: str, user: str, password: str, schema_name: str) -> Engine:
@@ -20,7 +20,7 @@ def connect(host: str, user: str, password: str, schema_name: str) -> Engine:
 
 
 def get_jokes_app_connection() -> Engine:
-    return connect(HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
+    return connect(DB_HOST, POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME)
 
 
 def execute_update(conn: Engine, postgres_query: str) -> bool:
