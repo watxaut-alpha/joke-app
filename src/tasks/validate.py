@@ -1,13 +1,14 @@
 import logging
 
 import src.api.src.db.core as db
+from src.api.src.db.secret import POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
 
 def put_validated_jokes_in_joke_db():
 
     logger = logging.getLogger("jokeBot")
 
-    conn = db.get_jokes_app_connection()
+    conn = db.connect(host="localhost", user=POSTGRES_USER, password=POSTGRES_PASSWORD, schema_name=SCHEMA_NAME)
 
     logger.info("Select validated jokes")
     sql_query = "select * from validate_jokes where deleted_at is null and is_joke is true"

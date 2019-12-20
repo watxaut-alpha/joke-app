@@ -7,12 +7,13 @@ import src.api.src.mail.core as mail
 import src.api.src.mail.smtp as smtp
 import src.web.twitter.twitter as twitter
 from src.api.src.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
+from src.api.src.db.secret import POSTGRES_USER, POSTGRES_PASSWORD, SCHEMA_NAME
 
 
 def send_mail(is_debug):
     logger = logging.getLogger("jokeBot")
 
-    conn = db.get_jokes_app_connection()
+    conn = db.connect(host="localhost", user=POSTGRES_USER, password=POSTGRES_PASSWORD, schema_name=SCHEMA_NAME)
 
     d_receivers = users.get_users_mail(is_debug).to_dict(orient="index")
 
