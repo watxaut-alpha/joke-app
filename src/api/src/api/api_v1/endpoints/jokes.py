@@ -78,6 +78,18 @@ async def add_joke(user_joke: models.UserJoke, current_user: auth.User = Depends
     return {"message": "success"}
 
 
+@router.get("/jokes/{joke_id}", tags=["jokes"])
+async def get_joke(joke_id: int, current_user: auth.User = Depends(auth.get_current_user)):
+    df = jokes.get_joke(joke_id)
+    return df.to_dict(orient="index")
+
+
+@router.delete("/jokes/{joke_id}", tags=["jokes"])
+async def remove_joke(joke_id: int, current_user: auth.User = Depends(auth.get_current_user)):
+    is_deleted = jokes.delete_joke(joke_id)
+    return {"message": "success", "is_deleted": f"Joke removed: {is_deleted}"}
+
+
 @router.put("/jokes/tag", tags=["jokes"])
 async def tag_joke(user_tag: models.UserTag):
     """

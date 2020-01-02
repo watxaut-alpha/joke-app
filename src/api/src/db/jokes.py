@@ -143,6 +143,26 @@ def put_joke_db(joke: str, author: str) -> None:
     db.add_record(conn, model, d_values)
 
 
+def get_joke(joke_id: int):
+    conn = db.get_jokes_app_connection()
+    sql = f"select * from jokes_to_send where id = {joke_id}"
+    try:
+        df = db.execute_read(conn, sql)
+    except sqlalchemy.exc.SQLAlchemyError:
+        return pd.DataFrame()
+    return df
+
+
+def delete_joke(joke_id: int):
+    conn = db.get_jokes_app_connection()
+    sql = f"delete from jokes_to_send where id = {joke_id}"
+    try:
+        db.execute_update(conn, sql)
+    except sqlalchemy.exc.SQLAlchemyError:
+        return False
+    return True
+
+
 def put_sent_joke_db(conn: Engine, joke_id: int, sent_from: str) -> None:
     model = "sent_jokes"
     d_values = {"joke_id": joke_id, "sent_from": sent_from, "created_at": datetime.datetime.now().isoformat()}

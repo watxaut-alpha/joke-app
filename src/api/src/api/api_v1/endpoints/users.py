@@ -47,7 +47,7 @@ async def add_mail_user(mail_user: models.MailUser):
     return mail_user
 
 
-@router.post("/users/mail/unsubscribed", tags=["users"], status_code=201)
+@router.post("/jokes/unsubscribed", tags=["users"], status_code=201)
 async def unsubscribe_from_mail(request: Request):
     """
     Removes user from the distribution mail list

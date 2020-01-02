@@ -71,7 +71,7 @@ async def joke_rating(request: Request, joke_id: int, id_hash: str, rating: floa
     return template
 
 
-@router.get("/users/mail/subscribe", status_code=200, include_in_schema=False)
+@router.get("/jokes/subscribe", status_code=200, include_in_schema=False)
 async def show_subscribe_page(request: Request):
     return templates.TemplateResponse("subscribe.html", {"request": request})
 
@@ -99,7 +99,7 @@ async def subscribe_user(request: Request):
         )
 
 
-@router.get("/users/mail/unsubscribe", status_code=200, include_in_schema=False)
+@router.get("/jokes/unsubscribe", status_code=200, include_in_schema=False)
 async def show_unsubscribe_page(request: Request):
     return templates.TemplateResponse("unsubscribe.html", {"request": request, "API_V_STR": API_V_STR})
 

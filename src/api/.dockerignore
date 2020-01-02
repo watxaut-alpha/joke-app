@@ -1,4 +1,4 @@
 
 # exclude env from going in docker
-.venv
-venv/
+.venv-api
+venv-api/
