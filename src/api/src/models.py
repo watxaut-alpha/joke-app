@@ -26,6 +26,7 @@ class UserValidation(BaseModel):
 class UserJoke(BaseModel):
     joke: str
     author: str
+    author_email: str = None
 
 
 class UserTag(BaseModel):

@@ -20,7 +20,7 @@ def add_user_telegram(user_id: str, first_name: str) -> bool:
 
     if not has_db_telegram_user(conn, user_id):
         d_user = {"user_id": user_id, "name": first_name, "created_at": datetime.datetime.now().isoformat()}
-        return db.add_record(conn, "users", d_user)
+        return db.add_record(conn, "users_telegram", d_user)
     else:
         # user already created
         return True

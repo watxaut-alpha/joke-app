@@ -1,6 +1,4 @@
 import pandas as pd
-import datetime
-from sqlalchemy.engine import Engine
 
 from src.db.secret import SCHEMA_NAME, POSTGRES_USER, POSTGRES_PASSWORD
 import src.db.core as db
@@ -12,16 +10,3 @@ def populate_jokes_db(host: str, path_json: str) -> None:
 
     df_json = pd.read_json(path_json, encoding="utf8")
     df_json.to_sql("jokes_to_send", con=engine, if_exists="append", index=False)
-
-
-def add_telegram_log(conn: Engine, sender: str, message: str, id_user: int, item_1: str, var_txt_1: str) -> bool:
-    d_telegram = {
-        "sender": sender,
-        "message": message,
-        "user_id": id_user,
-        "item_1": str(item_1),
-        "var_txt_1": str(var_txt_1),
-        "created_at": datetime.datetime.now().isoformat(),
-    }
-
-    return db.add_record(conn, "telegram_log", d_telegram)

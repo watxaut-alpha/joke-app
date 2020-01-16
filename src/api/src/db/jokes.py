@@ -130,12 +130,13 @@ DO NOTHING;
     db.execute_update(conn, sql)
 
 
-def put_joke_db(joke: str, author: str) -> None:
+def put_joke_db(joke: str, author: str, author_email: str) -> None:
     conn = db.get_jokes_app_connection()
     model = "jokes_to_send"
     d_values = {
         "joke": joke,
         "author": author,
+        "author_email": author_email,
         "rating": 5,
         "tags": "",
         "created_at": datetime.datetime.now().isoformat(),
