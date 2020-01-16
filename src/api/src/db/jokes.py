@@ -52,7 +52,7 @@ def get_5_next_jokes_to_send():
 
 
 def check_user_exists(user_id: str):
-    sql_telegram = "select user_id from users where user_id='{user_id}'".format(user_id=user_id)
+    sql_telegram = "select user_id from users_telegram where user_id='{user_id}'".format(user_id=user_id)
     sql_mail = "select id_hash from users_mail where id_hash='{user_id}'".format(user_id=user_id)
 
     conn = db.get_jokes_app_connection()

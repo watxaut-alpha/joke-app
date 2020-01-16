@@ -10,7 +10,7 @@ except ModuleNotFoundError:
 
 
 def has_db_telegram_user(conn: Engine, user_id: str) -> bool:
-    df = db.execute_read(conn, "select id from users where user_id = '{}'".format(user_id))
+    df = db.execute_read(conn, "select id from users_telegram where user_id = '{}'".format(user_id))
     return not df.empty  # returns true if the user is in the DB
 
 
