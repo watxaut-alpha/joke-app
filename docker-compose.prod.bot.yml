@@ -1,0 +1,9 @@
+version: '3'
+services:
+  joke-telegram:
+    image: joke-telegram:0.5.1
+    build:
+      context: ./src/bot/
+      dockerfile: Dockerfile
+    env_file:
+      - config/env-telegram.prod.env

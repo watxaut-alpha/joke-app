@@ -1,0 +1,49 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - app-airflow-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - '5433:5433'
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+  webserver:
+    image: puckel/docker-airflow:1.10.7
+    build:
+      context: ./src/airflow
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - postgres
+    env_file:
+      - config/env-airflow.env
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    volumes:
+      - ./src/airflow/dags:/usr/local/airflow/dags
+      - ./src/airflow/airflow.cfg:/usr/local/airflow/airflow.cfg
+      # - ./plugins:/usr/local/airflow/plugins
+    ports:
+      - "8080:8080"
+    command: webserver
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+volumes:
+  app-airflow-data:

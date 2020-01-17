@@ -1,9 +1,9 @@
 import logging
+import os
 
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
 
 import src.functions as functions
-from src.secret import TOKEN
 
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -11,6 +11,8 @@ logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # telegram bot init
+TOKEN = os.getenv("TOKEN")
+logger.info(f"TOKEN: {TOKEN}")
 updater = Updater(token=TOKEN)
 dispatcher = updater.dispatcher
 

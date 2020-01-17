@@ -1,12 +1,5 @@
 version: '3'
 services:
-  joke-telegram:
-    image: joke-telegram:0.5.1
-    build:
-      context: ./src/bot/
-      dockerfile: Dockerfile
-    links:
-      - joke-api
   joke-api:
     image: joke-api:0.2.0
     build:
@@ -19,7 +12,7 @@ services:
   db:
     image: postgres:11
     env_file:
-      - env-postgres.env
+      - config/env-postgres.env
     environment:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
@@ -31,7 +24,7 @@ services:
     depends_on:
       - db
     env_file:
-      - env-pgadmin.env
+      - config/env-pgadmin.env
     ports:
       - '5555:5555'
 volumes:
