@@ -19,7 +19,7 @@ conn_id_load = "db"
 
 dag_args = {
     "retries": 2,
-    "start_date": datetime(2020, 1, 10, 0, 0, 0),
+    "start_date": datetime(2020, 1, 17, 0, 0, 0),
     "owner": "airflow",
     "depends_on_past": False,
     "wait_for_downstream": False,
