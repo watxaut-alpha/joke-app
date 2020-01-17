@@ -77,7 +77,9 @@ def put_tags_jokes(conn_id_extract, conn_id_load):
         """
         df_jokes = conn_load.get_pandas_df(sql=sql_load)
         df_jokes.update(df_joke_tags)
-        conn_load.insert_rows(table="jokes_to_send", rows=df_jokes.values.tolist(), target_fields=df_jokes.keys())
+        conn_load.insert_rows(
+            table="jokes_to_send", rows=df_jokes.values.tolist(), target_fields=df_jokes.keys(), replace=True
+        )
         logger.info(f"Done updating tags for '{len(df_jokes)}' jokes")
     else:
         logger.info("No new tags for jokes")
