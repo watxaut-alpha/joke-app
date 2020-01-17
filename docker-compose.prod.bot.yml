@@ -1,7 +1,7 @@
 version: '3'
 services:
   joke-telegram:
-    image: joke-telegram:0.5.1
+    image: joke-telegram:0.5.2
     build:
       context: ./src/bot/
       dockerfile: Dockerfile
