@@ -8,65 +8,70 @@ a little bit more complex than sending just a mail, hm hm no no no.
 
 ![He knows it's not the same](resources/hmhm.gif)
 
-In this one I created a bot that is able to send a joke and make the user rate it. 
-All the user input goes into a postgres DB and then is analysed.
+This one adds a bunch of new stuff:
+* An API (Fastapi - Python): CRUD for jokes, rating for jokes and joke validation
+    * Postgresql DB
+    * pgAdmin
+* An HTML exported Jupyter Notebook with joke statistics ([here](https://watxaut.com/notebooks/ratings "Ratings Notebook")) 
+* A Telegram Bot, as a fast interface for the API
+* A Twitter bot that goes tweeting jokes
+* Airflow: not really necessary for this low volume of tasks, but hey: when real ETL comes, you will be prepared
+* "Docker this, Docker that": everything wrapped up with Docker Compose files
 
 # Installation
-You can try the project in either a Python Virtual Environment or in Docker (preferred option)
-BUT FIRST you need to define two files: bot.secret.py and db.secret.py files: 
-
-### src/bot/secret.py
-In here you have to define your Telegram bot token but first you will need to [create a bot 
-asking the BotFather in Telegram](https://core.telegram.org/bots#3-how-do-i-create-a-bot "A bot for creating bots") if
-you did not. Then the BotFather will give you the Bot's Token and you should put it in here like this:
-```python
-# src/bot/secret.py
-token = "Your Telegram bot token here"
-```
-
-### src/db/secret.py
-In here you will have to define your connection to the DB:
-```python
-POSTGRES_USER = 'your_db_user_name'
-POSTGRES_PASSWORD = 'your_pwd_for_the_user'
-
-host = 'the host of the DB (localhost or other)'
-s_db_name = 'the DB schema name'  
-```
-
-## Method 1: Python Virtual environment
-So if you want to install the repo localhost, this is the fastest way. Execute the following commands in order 
-to create a Python Virtual Environment in <your_dir>:
+* First you will need Docker installed
+* Second, you will have to fill some Environment parameters
+### config/env-airflow.env
+* FERNET_KEY
+You will need to run the following scrip to find the Fernet key for your host:
 ```bash
-cd <your_dir>
-pip3 install virtualenv
-virtualenv venv --python=python3.6
-source venv/bin/activate
+docker run puckel/docker-airflow:1.10.7 python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
 ```
-Note: this works for MacOS and Linux, for windows see how to install and activate Virtual 
-Environments [here](https://virtualenv.pypa.io/en/latest/installation/).
+### config/env-api.env
+* JWT_SECRET_KEY (run 'openssl rand -hex 32' to get it)
+* ALGORITHM (I use 'HS256')
+* DOCS_USER (for the API Docs page)
+* DOCS_PASSWORD (for the API Docs page)
 
+### config/env-pgadmin.env
+PGADMIN_LISTEN_PORT (normally you would use 555)
+PGADMIN_DEFAULT_EMAIL (your user email)
+PGADMIN_DEFAULT_PASSWORD (run 'openssl rand -hex 32' to get it)
 
-## Method 2: Docker
-If you want to run it in docker simply install docker (if you haven't) and build and run the container. 
-I created a MakeFile for easier usage:
-* "make build" in the root of the repo will build the container (needed if you changed the code)
-* "make run" will run the container
+### config/env-postgres.env
+POSTGRES_SERVER=db (should be the name of the docker service for the postgres jokes db)
+POSTGRES_USER (normally you would use 'postgres' as the usual non-safe choice)
+POSTGRES_PASSWORD (run 'openssl rand -hex 32' to get it)
 
-# Scrappers
-I am using scrappers to feed the DB with jokes. But not every thing that is scrapped is 
-a joke, it needs validation first. This is why the bot has the option "validate_joke",
+### config/env-telegram.dev.env and config/env-telegram.prod.env
+TOKEN (you will get it from the Bot-father)
+Chech this in order to [create a bot asking the BotFather 
+in Telegram](https://core.telegram.org/bots#3-how-do-i-create-a-bot "A bot for creating bots")
+
+### .env (at the root of your DEV environment)
+Should look like this plus the environment variables you might have
+```bash
+COMPOSE_PATH_SEPARATOR=:
+COMPOSE_FILE=docker-compose.dev.api.yml:docker-compose.dev.airflow.yml:docker-compose.dev.bot.yml
+```
+
+### .env (at the root of your PROD environment)
+Should look like this plus the environment variables you might have
+```bash
+COMPOSE_PATH_SEPARATOR=:
+COMPOSE_FILE=docker-compose.prod.api.yml:docker-compose.prod.airflow.yml:docker-compose.prod.bot.yml
+```
+
+## Scrappers
+The community is giving feedback with more jokes from users, but I got a base of jokes from scrappers. But not every 
+thing that is scrapped is a joke, it needs validation first. This is why the bot has the option "validate_joke",
 which asks the user if the sent joke is actually a joke or not.
 
-## Twitter
+### Twitter
 I call it scrapping, but I am just using the API wrapper library for Python: Tweepy, which
 connects to Twitter via OAuth and returns tweets, although the idea is the same: get the
 jokes automatically from a list of pages(users instead)
 
-### 
-
 # Incoming next steps
-* Add a BI client or a Jupyter Notebook in order to visualise the ratings of the jokes
-* Add scrappers looking for jokes and make a functionality in the bot to validate 
-these new jokes
+* Add multi-language support
 * Segment users in different categories depending on their affinity with the jokes 
