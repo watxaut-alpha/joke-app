@@ -6,10 +6,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-try:
-    import src.auth.core as auth
-except ModuleNotFoundError:
-    import src.api.src.auth.core as auth
+import src.api.auth as auth
 
 router = APIRouter()
 

@@ -1,17 +1,13 @@
 import logging
-import time
-from pathlib import Path
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from pathlib import Path
 
+import time
 from jinja2 import Template
 
-try:
-    import src.mail.smtp as smtp
-    import src.helpers as helpers
-except ModuleNotFoundError:
-    import src.api.src.mail.smtp as smtp
-    import src.api.src.helpers as helpers
+import src.helpers as helpers
+import src.mail.smtp as smtp
 
 logger = logging.getLogger("jokeApi")
 

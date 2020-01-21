@@ -1,13 +1,8 @@
 import requests
 
-try:
-    import src.db.users as db_users
-    import src.mail.core as mail
-    from src.mail.secret import MAILGUN_USER, MAILGUN_PWD
-except ModuleNotFoundError:
-    import src.api.src.db.users as db_users
-    import src.api.src.mail.core as mail
-    from src.api.src.mail.secret import MAILGUN_USER, MAILGUN_PWD
+import src.db.users as db_users
+import src.mail.core as mail
+from src.config import MAILGUN_USER, MAILGUN_PWD
 
 
 def get_cat_url():

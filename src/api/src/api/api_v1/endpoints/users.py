@@ -2,17 +2,10 @@ from fastapi import Depends, APIRouter
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
-try:
-    import src.auth.core as auth
-    import src.db.users as db_users
-    import src.models as models
-    import src.helpers as helpers
-except ModuleNotFoundError:
-    import src.api.src.auth.core as auth
-    import src.api.src.db.users as db_users
-    import src.api.src.models as models
-    import src.api.src.helpers as helpers
-
+import src.api.auth as auth
+import src.db.users as db_users
+import src.helpers as helpers
+import src.models as models
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")

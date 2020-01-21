@@ -1,12 +1,9 @@
 import datetime
-from sqlalchemy.engine import Engine
+
 import pandas as pd
+from sqlalchemy.engine import Engine
 
-
-try:
-    import src.db.core as db
-except ModuleNotFoundError:
-    import src.api.src.db.core as db
+import src.db.core as db
 
 
 def has_twitter_db_joke(conn: Engine, hash_id: str) -> bool:

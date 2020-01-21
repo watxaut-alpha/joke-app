@@ -8,15 +8,9 @@ from jwt import PyJWTError
 from pydantic import BaseModel
 from starlette.status import HTTP_401_UNAUTHORIZED
 
-try:
-    import src.db.users as users
-    from src.auth.secret import ALGORITHM, SECRET_KEY
-    from src.api.api_v1.params import API_V_STR
-except ModuleNotFoundError:
-    import src.api.src.db.users as users
-    from src.api.src.auth.secret import ALGORITHM, SECRET_KEY
-    from src.api.src.api.api_v1.params import API_V_STR
-
+import src.db.users as users
+from src.api.api_v1.params import API_V_STR
+from src.config import ALGORITHM, JWT_SECRET_KEY
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{API_V_STR}/token")
 
@@ -55,7 +49,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
@@ -91,7 +85,7 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None) -> bytes
     else:
         expire = datetime.datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 

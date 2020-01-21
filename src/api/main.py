@@ -8,16 +8,10 @@ from starlette.staticfiles import StaticFiles
 from starlette.status import HTTP_401_UNAUTHORIZED
 from starlette.templating import Jinja2Templates
 
-try:
-    import src.api.api_v1.api as api_v1
-    import src.frontend.endpoints as frontend
-    from src.api.api_v1.params import API_V_STR, TITLE, DESCRIPTION
-    from src.auth.secret import DOCS_USER, DOCS_PASSWORD
-except ModuleNotFoundError:
-    import src.api.src.api.api_v1.api as api_v1
-    import src.api.src.frontend.endpoints as frontend
-    from src.api.src.api.api_v1.params import API_V_STR, TITLE, DESCRIPTION
-    from src.api.src.auth.secret import DOCS_USER, DOCS_PASSWORD
+import src.api.api_v1.api as api_v1
+import src.frontend.endpoints as frontend
+from src.api.api_v1.params import API_V_STR, TITLE, DESCRIPTION
+from src.config import DOCS_USER, DOCS_PASSWORD
 
 # prod
 # uvicorn main:app --host 0.0.0.0 --port 80

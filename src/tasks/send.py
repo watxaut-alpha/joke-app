@@ -15,7 +15,7 @@ def send_mail(is_debug):
     host = "localhost"
     conn = db.get_jokes_app_connection(host)
 
-    d_receivers = users.get_users_mail(is_debug, host=host).to_dict(orient="index")
+    d_receivers = users.get_users_mail(is_debug).to_dict(orient="index")
 
     # get a joke that is not sent previously
     df_joke = jokes.get_joke_not_sent_by_pfm_already(conn, limit=1, sent_from="mail")

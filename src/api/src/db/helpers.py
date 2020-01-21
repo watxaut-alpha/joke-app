@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.db.secret import SCHEMA_NAME, POSTGRES_USER, POSTGRES_PASSWORD
+from src.config import SCHEMA_NAME, POSTGRES_USER, POSTGRES_PASSWORD
 import src.db.core as db
 
 

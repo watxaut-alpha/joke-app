@@ -4,16 +4,10 @@ from fastapi import APIRouter
 from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
-try:
-    import src.models as models
-    import src.helpers as helpers
-    import src.db.jokes as jokes
-    from src.api.api_v1.params import API_V_STR
-except ModuleNotFoundError:
-    import src.api.src.models as models
-    import src.api.src.helpers as helpers
-    import src.api.src.db.jokes as jokes
-    from src.api.src.api.api_v1.params import API_V_STR
+import src.db.jokes as jokes
+import src.helpers as helpers
+import src.models as models
+from src.api.api_v1.params import API_V_STR
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")

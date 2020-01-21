@@ -1,12 +1,10 @@
 import datetime
-import sqlalchemy.exc
+
 import pandas as pd
+import sqlalchemy.exc
 from sqlalchemy.engine import Engine
 
-try:
-    import src.db.core as db
-except ModuleNotFoundError:
-    import src.api.src.db.core as db
+import src.db.core as db
 
 
 def get_random_joke() -> pd.DataFrame:

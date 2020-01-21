@@ -1,12 +1,10 @@
 import datetime
 import uuid
-from sqlalchemy.engine import Engine
-import sqlalchemy.exc
 
-try:
-    import src.db.core as db
-except ModuleNotFoundError:
-    import src.api.src.db.core as db
+import sqlalchemy.exc
+from sqlalchemy.engine import Engine
+
+import src.db.core as db
 
 
 def has_db_telegram_user(conn: Engine, user_id: str) -> bool:
@@ -26,8 +24,8 @@ def add_user_telegram(user_id: str, first_name: str) -> bool:
         return True
 
 
-def get_users_mail(is_debug=False, host=None):
-    conn = db.get_jokes_app_connection(host)
+def get_users_mail(is_debug=False):
+    conn = db.get_jokes_app_connection()
     if not is_debug:
         return db.execute_read(conn, "select * from users_mail where deleted_at is null")
     else:

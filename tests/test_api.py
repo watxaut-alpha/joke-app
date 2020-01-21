@@ -12,7 +12,7 @@ from passlib.context import CryptContext
 
 from src.api.main import app
 import src.api.src.auth.core as api_auth
-from src.api.src.auth.secret import DOCS_USER, DOCS_PASSWORD
+from src.api.src.config import DOCS_USER, DOCS_PASSWORD
 
 client = TestClient(app)
 
