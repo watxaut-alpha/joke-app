@@ -8,7 +8,7 @@ from jinja2 import Template
 
 import src.helpers as helpers
 import src.mail.smtp as smtp
-from src.config import HOST
+from src.config import HOST, PORT
 
 logger = logging.getLogger("jokeApi")
 
@@ -71,11 +71,17 @@ Subject: {}
     with open("{}/templates/mail_joke.html".format(parent_path), "r") as f_rating:
         s_html = f_rating.read()
 
+    # check port
+    if PORT is not None:
+        host = f"{HOST}:{PORT}"
+    else:
+        host = HOST
+
     # add params with jinja2 and the html
     rating_template = Template(s_html)
     email_html = rating_template.render(
         joke=d_joke["joke"],
-        host=HOST,
+        host=host,
         joke_id=d_joke["id"],
         id_hash=d_receiver["id_hash"],
         signature=signature,

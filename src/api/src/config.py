@@ -7,6 +7,7 @@ DOCS_USER: str = os.getenv("DOCS_USER")
 DOCS_PASSWORD: str = os.getenv("DOCS_PASSWORD")
 
 HOST: str = os.getenv("HOST")
+PORT: str = os.getenv("PORT")
 
 # DB vars
 POSTGRES_USER: str = os.getenv("POSTGRES_USER")
