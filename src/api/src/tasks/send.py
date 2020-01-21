@@ -5,11 +5,11 @@ import src.db.jokes as jokes
 import src.db.users as users
 import src.mail.core as mail
 import src.mail.smtp as smtp
-from src.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
+from src.config import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
 
 
 def send_mail(is_debug):
-    logger = logging.getLogger("jokeBot")
+    logger = logging.getLogger(__name__)
 
     conn = db.get_jokes_app_connection()
 

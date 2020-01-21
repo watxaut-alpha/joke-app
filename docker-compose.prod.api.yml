@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./src/api/templates:/app/templates
+    env_file:
+      - config/env-api.env
     ports:
       - 5000:5000
   db:

@@ -5,7 +5,6 @@ import os
 import src.tasks.send as tasks
 import src.tasks.validate as validate
 
-
 if __name__ == "__main__":
 
     logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -33,7 +32,5 @@ if __name__ == "__main__":
         tasks.send_mail(args.debug)
     elif args.action == "validate_jokes":
         validate.put_validated_jokes_in_joke_db()
-    elif args.action == "tweet_joke":
-        tasks.send_tweet()
     else:
         raise Exception("Option for action not recognized: '{}'".format(args.action))

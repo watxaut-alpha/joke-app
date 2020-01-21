@@ -5,7 +5,7 @@ import src.api.src.db.core as db
 
 def put_validated_jokes_in_joke_db():
 
-    logger = logging.getLogger("jokeBot")
+    logger = logging.getLogger(__name__)
 
     host = "localhost"
     conn = db.get_jokes_app_connection(host)

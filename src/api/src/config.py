@@ -6,6 +6,8 @@ ALGORITHM: str = os.getenv("ALGORITHM")
 DOCS_USER: str = os.getenv("DOCS_USER")
 DOCS_PASSWORD: str = os.getenv("DOCS_PASSWORD")
 
+HOST: str = os.getenv("HOST")
+
 # DB vars
 POSTGRES_USER: str = os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")

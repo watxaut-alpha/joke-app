@@ -8,6 +8,7 @@ from jinja2 import Template
 
 import src.helpers as helpers
 import src.mail.smtp as smtp
+from src.config import HOST
 
 logger = logging.getLogger("jokeApi")
 
@@ -65,8 +66,6 @@ Subject: {}
         mail_user, d_receiver["email"], subject, d_joke["joke"], disclaimer
     )
 
-    host = "watxaut.com"
-
     # load mail template for ratings
     parent_path = Path(__file__).resolve().parent
     with open("{}/templates/mail_joke.html".format(parent_path), "r") as f_rating:
@@ -76,7 +75,7 @@ Subject: {}
     rating_template = Template(s_html)
     email_html = rating_template.render(
         joke=d_joke["joke"],
-        host=host,
+        host=HOST,
         joke_id=d_joke["id"],
         id_hash=d_receiver["id_hash"],
         signature=signature,

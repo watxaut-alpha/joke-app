@@ -1,16 +1,17 @@
 import logging
 
-import src.api.src.db.core as db
-import src.api.src.db.jokes as jokes
-import src.api.src.db.users as users
-import src.api.src.mail.core as mail
-import src.api.src.mail.smtp as smtp
+import src.db.core as db
+import src.db.jokes as jokes
+import src.db.users as users
+import src.mail.core as mail
+import src.mail.smtp as smtp
+from src.config import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
+
 import src.web.twitter.twitter as twitter
-from src.api.src.mail.secret import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
 
 
 def send_mail(is_debug):
-    logger = logging.getLogger("jokeBot")
+    logger = logging.getLogger(__name__)
 
     host = "localhost"
     conn = db.get_jokes_app_connection(host)
