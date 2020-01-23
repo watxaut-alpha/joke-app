@@ -2,9 +2,10 @@ import logging
 
 from airflow.operators.postgres_operator import PostgresHook
 
+from utils.hooks import PostgresUpdateApiHook
+
 
 def check_validated_jokes(conn_id_extract, conn_id_load):
-
     logger = logging.getLogger(__name__)
 
     sql_get_jokes = "select * from validate_jokes where deleted_at is null and is_joke is true"
@@ -66,7 +67,7 @@ def put_tags_jokes(conn_id_extract, conn_id_load):
 
     logging.info(f"n Jokes to update tags: {len(df_joke_tags)}")
     if not df_joke_tags.empty:
-        conn_load = PostgresHook(postgres_conn_id=conn_id_load, schema="jokes-app")
+        conn_load = PostgresUpdateApiHook(postgres_conn_id=conn_id_load, schema="jokes-app")
         sql_load = """
             select
                 *
@@ -77,8 +78,9 @@ def put_tags_jokes(conn_id_extract, conn_id_load):
         """
         df_jokes = conn_load.get_pandas_df(sql=sql_load)
         df_jokes.update(df_joke_tags)
-        conn_load.insert_rows(
-            table="jokes_to_send", rows=df_jokes.values.tolist(), target_fields=list(df_jokes.keys()), replace=True
+        logger.info(df_jokes.head(10))
+        conn_load.update_column(
+            table="jokes_to_send", column_name="tags", df=df_jokes[["id", "tags"]], id_column_name="id"
         )
         logger.info(f"Done updating tags for '{len(df_jokes)}' jokes")
     else:

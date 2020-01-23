@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 # telegram bot init
 TOKEN = os.getenv("TOKEN")
-logger.info(f"TOKEN: {TOKEN}")
 updater = Updater(token=TOKEN)
 dispatcher = updater.dispatcher
 
