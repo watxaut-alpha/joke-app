@@ -2,7 +2,7 @@ import requests
 
 from requests.exceptions import Timeout
 
-from src.secret import HOST
+from src.config import HOST
 
 API_V_STR: str = "/api/v1"
 TIMEOUT = 1.5  # secs
