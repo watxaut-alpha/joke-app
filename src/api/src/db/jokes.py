@@ -135,8 +135,8 @@ def put_joke_db(joke: str, author: str, author_email: str) -> None:
         "joke": joke,
         "author": author,
         "author_email": author_email,
-        "rating": 5,
-        "tags": "",
+        "rating": None,
+        "tags": None,
         "created_at": datetime.datetime.now().isoformat(),
     }
     db.add_record(conn, model, d_values)
