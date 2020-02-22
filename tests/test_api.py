@@ -11,10 +11,12 @@ from starlette.testclient import TestClient
 from passlib.context import CryptContext
 
 from src.api.main import app
-import src.api.src.auth.core as api_auth
+import src.api.src.api.auth as api_auth
 from src.api.src.config import DOCS_USER, DOCS_PASSWORD
 
 client = TestClient(app)
+
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
 def get_oauth_password():
@@ -23,7 +25,7 @@ def get_oauth_password():
 
 
 def get_oauth_token():
-    access_token_expires = timedelta(minutes=api_auth.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = api_auth.create_access_token(data={"sub": DOCS_USER}, expires_delta=access_token_expires)
     return access_token
 

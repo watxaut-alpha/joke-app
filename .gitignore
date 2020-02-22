@@ -1,8 +1,8 @@
 # ignore all secrets
 *secret.py
 *config/
-insert_jokes.py
 notebooks/exports
+src/tasks/img_jokes
 src/api/templates/exports
 src/api/cert
 *.env
