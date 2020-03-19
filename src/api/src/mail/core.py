@@ -56,7 +56,7 @@ def create_message_joke(mail_user: str, d_receiver: dict, d_joke: dict):
     EVERYDAY, BREAKING THE CODE, BREAKING YOUR COMPUTER OR STARTING WW3. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
     HOLDERS BE ACCUSED OF RACISM, BAD JOKES OR 'THIS JOKE GAVE ME AIDS'. TALK TO MY HAND"""
 
-    subject = "CHISTE MALO DEL DÍA - NINI EDITION: RELOADED"
+    subject = "CHISTE MALO DEL DÍA - GLOVO-CONFINEMENT EDITION"
 
     email_text = """From: {}
 To: {}
