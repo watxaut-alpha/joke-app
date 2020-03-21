@@ -5,7 +5,7 @@ import src.api.auth as auth
 import src.db.jokes as jokes
 import src.db.validation as validation
 import src.models as models
-
+import src.tasks.send as send
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -122,3 +122,9 @@ async def get_random_validate_joke():
     else:
         response = {"joke": "No more jokes to validate :D", "joke_id": -1}
     return response
+
+
+@router.delete("/jokes/send", tags=["jokes"])
+async def send_joke(current_user: auth.User = Depends(auth.get_current_user)):
+    is_sent = await send.send_mail(is_debug=False)
+    return {"message": "success", "is_sent": f"Are jokes sent: {is_sent}"}

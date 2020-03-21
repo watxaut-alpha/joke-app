@@ -8,7 +8,7 @@ import src.mail.smtp as smtp
 from src.config import MAILGUN_USER as USER, MAILGUN_PWD as PASSWORD
 
 
-def send_mail(is_debug):
+async def send_mail(is_debug):
     logger = logging.getLogger(__name__)
 
     conn = db.get_jokes_app_connection()
