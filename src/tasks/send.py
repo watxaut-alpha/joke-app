@@ -1,4 +1,3 @@
-import logging
 import os
 
 import dotenv
@@ -28,3 +27,5 @@ def send_joke_from_api():
     else:
         return False
 
+
+send_joke_from_api()
