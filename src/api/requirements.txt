@@ -28,7 +28,7 @@ promise==2.2.1
 psycopg2==2.8.3
 pycparser==2.19
 pydantic==0.32.2
-PyJWT==1.7.1
+PyJWT==2.4.0
 python-dateutil==2.8.0
 python-multipart==0.0.5
 pytz==2019.3
